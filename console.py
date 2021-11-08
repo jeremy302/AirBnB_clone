@@ -18,7 +18,7 @@ class HBNBCommand(cmd.Cmd):
 
     def help_quit(self):
         '''prints the documentation for the command quit'''
-        print("Exits the program")
+        print("The quit command exits the program\n")
 
     def do_EOF(self, arg):
         '''method that handles the EOF and exit the program'''
@@ -27,7 +27,7 @@ class HBNBCommand(cmd.Cmd):
 
     def help_EOF(self):
         """ Prints the documentation for EOF """
-        print("Exits the program\n")
+        print("The EOF exits the program\n")
 
 
 if __name__ == '__main__':
