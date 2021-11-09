@@ -45,7 +45,7 @@ class HBNBCommand(cmd.Cmd):
         # dosen't need reformatting
         if not ('.' in line and '(' in line and ')' in line):
             return line
-        
+
         cls = re.search(r".+?\.", line)
         cmd = re.search(r"\..+?\(", line)
         if not cls and not cmd:
@@ -71,10 +71,15 @@ class HBNBCommand(cmd.Cmd):
         return new_line
 
     def postcmd(self, stop, line):
-        """Prints if isatty"""
+        """Prints the prompt when isatty is false"""
         if not sys.__stdin__.isatty():
             print('(hbnb) ', end='')
         return stop
+
+    def preloop(self):
+        """Prints the prompt when isatty is false"""
+        if not sys.__stdin__.isatty():
+            print('(hbnb)')
 
     def emptyline():
         ''' overrides the bhavior of an empty line'''
@@ -122,7 +127,7 @@ class HBNBCommand(cmd.Cmd):
         '''
         args = arg.split()
 
-        if args[0]:
+        if len(args) >= 1:
             cls = args[0]
         else:
             print("** class name missing **")
@@ -130,7 +135,7 @@ class HBNBCommand(cmd.Cmd):
         if cls not in self.classes:
             print("** class doesn't exist **")
             return
-        if args[1]:
+        if len(args) >= 2:
             id = args[1]
         else:
             print("** instance id missing **")
@@ -154,7 +159,7 @@ class HBNBCommand(cmd.Cmd):
         '''
         args = arg.split()
 
-        if args[0]:
+        if len(args) >= 1:
             cls = args[0]
         else:
             print("** class name missing **")
@@ -162,7 +167,7 @@ class HBNBCommand(cmd.Cmd):
         if cls not in self.classes:
             print("** class doesn't exist **")
             return
-        if args[1]:
+        if len(args) >= 2:
             id = args[1]
         else:
             print("** instance id missing **")
@@ -216,7 +221,7 @@ class HBNBCommand(cmd.Cmd):
         args = shlex.split(arg)
         cls = id = attr = val = ''
 
-        if args[0]:
+        if len(args) >= 1:
             cls = args[0]
         else:
             print("** class name missing **")
@@ -224,7 +229,7 @@ class HBNBCommand(cmd.Cmd):
         if cls not in self.classes:
             print("** class doesn't exist **")
             return
-        if args[1]:
+        if len(args) >= 2:
             id = args[1]
         else:
             print("** instance id missing **")
@@ -233,12 +238,12 @@ class HBNBCommand(cmd.Cmd):
         if key not in storage.all():
             print("** no instance found **")
             return
-        if args[2]:
+        if len(args) >= 3:
             attr = args[2]
         else:
             print("** attribute name missing **")
             return
-        if args[3]:
+        if len(args) >= 4:
             val = args[3]
         else:
             print("** value missing **")
@@ -261,7 +266,7 @@ class HBNBCommand(cmd.Cmd):
     def do_count(self, args):
         """Counts the number of class instances created"""
         count = 0
-        for k, v in storage.all():
+        for k in storage.all().keys():
             if args == k.split('.')[0]:
                 count += 1
         print(count)
