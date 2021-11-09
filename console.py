@@ -4,6 +4,7 @@
 
 import cmd
 import sys
+import shlex
 from models.__init__ import storage
 from models.base_model import BaseModel
 from models.user import User
@@ -12,7 +13,6 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-
 
 
 class HBNBCommand(cmd.Cmd):
@@ -32,6 +32,28 @@ class HBNBCommand(cmd.Cmd):
              'max_guest': int, 'price_by_night': int,
              'latitude': float, 'longitude': float
             }
+
+    def precmd(self, line):
+        """format command line for the dot.command syntax.
+        Usage: <class name>.<command>([<id> [<*args> or <**kwargs>]])
+        (Brackets denote optional fields in usage example.)
+        """
+        cmd = cls = id = args = ''
+
+        # check if the line has normal commands and
+        # dosen't need reformatting
+        if not ('.' in line and '(' in line and ')' in line):
+            return line
+
+    def postcmd(self, stop, line):
+        """Prints if isatty"""
+        if sys.__stdin__.isatty():
+            print('(hbnb) ', end='')
+        return stop
+
+    def emptyline():
+        ''' overrides the bhavior of an empty line'''
+        pass
 
     def do_quit(self, arg):
         '''method for the quit command'''
@@ -64,55 +86,76 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
         print(new_instance.id)
 
+    def help_create(self):
+        """ prints Documentation for the create command """
+        print("creates a new instance of the class passed as argument")
+        print("[Usage]: create <className>\n")
+
     def do_show(self, arg):
-        ''' pritns the string representation of an instance
+        ''' prints the string representation of an instance
             based on the class name and id
         '''
         args = arg.split()
-        cls = args[0]
-        id = args[1]
 
-        if not cls:
+        if args[0]:
+            cls = args[0]
+        else:
             print("** class name missing **")
             return
-        elif cls not in self.classes:
+        if cls not in self.classes:
             print("** class doesn't exist **")
             return
-        elif not id:
+        if args[1]:
+            id = args[1]
+        else:
             print("** instance id missing **")
             return
 
         key = cls + '.' + id
-        if key not in storage._FileStorage__objects:
+        all = storage.all()
+        if key not in all:
             print("** no instance found **")
             return
-        print(storage._FileStorage__objects[key])
+        print(all[key].__str__)
+
+    def help_show(self):
+        """ prints documentation for the show command """
+        print("prints the string representation of an instance")
+        print("[Usage]: show <className> <objectId>\n")
 
     def do_destroy(self, arg):
         ''' Deletes an instance based on the class name and id
             and saves the change into the JSON Storage file
         '''
         args = arg.split()
-        cls = args[0]
-        id = args[1]
 
-        if not cls:
+        if args[0]:
+            cls = args[0]
+        else:
             print("** class name missing **")
             return
-        elif cls not in self.classes:
+        if cls not in self.classes:
             print("** class doesn't exist **")
             return
-        elif not id:
+        if args[1]:
+            id = args[1]
+        else:
             print("** instance id missing **")
             return
-        
+
         key = cls + '.' + id
-        if key not in storage._FileStorage__objects:
+        all = storage.all()
+        if key not in all:
             print("** no instance found **")
             return
 
-        del (storage.all()[key])
+        del (all[key])
         storage.save()
+
+    def help_destroy(self):
+        ''' prints documentaion for the destroy command '''
+        print("Deletes an instance based on the class name and id")
+        print("[Usage]: destroy <className> <objectId>\n")
 
     def do_all(self, arg):
         ''' Prints all string representation of all instances
@@ -135,12 +178,18 @@ class HBNBCommand(cmd.Cmd):
                 result.append(all[key].__str__())
         print(result)
 
+    def help_all(self):
+        ''' prints documentaion for the all command '''
+        print("Prints all string representation of all instances")
+        print("based or not on the class name")
+        print("[Usage]: all <className>\n")
+
     def do_update(self, arg):
         '''  Updates an instance based on the class name
             and id by adding or updating attribute and saves
             the change into the JSON Storage file
         '''
-        args = arg.split()
+        args = shlex.split(arg)
         cls = id = attr = val = ''
 
         if args[0]:
@@ -179,6 +228,23 @@ class HBNBCommand(cmd.Cmd):
         # update the object attributes dictionary
         obj.__dict__.update(new_attr)
         obj.save()
+
+    def help_update(self):
+        """ prints Documentation for the update command """
+        print("Updates an object's attributes")
+        print("Usage: update <className> <id> <attName> <attVal>\n")
+
+    def do_count(self, args):
+        """Counts the number of class instances created"""
+        count = 0
+        for k, v in storage.all():
+            if args == k.split('.')[0]:
+                count += 1
+        print(count)
+
+    def help_count(self):
+        """ prints the documentation of the count command"""
+        print("Usage: count <class_name>")
 
 
 if __name__ == '__main__':
