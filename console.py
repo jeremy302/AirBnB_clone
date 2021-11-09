@@ -5,6 +5,7 @@
 import cmd
 import sys
 import shlex
+import re
 from models.__init__ import storage
 from models.base_model import BaseModel
 from models.user import User
@@ -38,16 +39,40 @@ class HBNBCommand(cmd.Cmd):
         Usage: <class name>.<command>([<id> [<*args> or <**kwargs>]])
         (Brackets denote optional fields in usage example.)
         """
-        cmd = cls = id = args = ''
+        cmd = cls = id = args = new_line = ''
 
         # check if the line has normal commands and
         # dosen't need reformatting
         if not ('.' in line and '(' in line and ')' in line):
             return line
+        
+        cls = re.search(r".+?\.", line)
+        cmd = re.search(r"\..+?\(", line)
+        if not cls and not cmd:
+            return line
+
+        cls = cls.group(0)[:-1]
+        cmd = cmd.group(0)[1:-1]
+
+        id = re.search(r"\(.+?\,|\(.+?\)", line)
+        if id:
+            id = id.group(0)[1:-1]
+        else:
+            id = ''
+
+        args = re.search(r",.+?\)", line)
+        if args:
+            args = args.group(0)[1:-1]
+            args = ' '.join(args.split(','))
+        else:
+            args = ''
+
+        new_line = "{} {} {} {}".format(cmd, cls, id, args)
+        return new_line
 
     def postcmd(self, stop, line):
         """Prints if isatty"""
-        if sys.__stdin__.isatty():
+        if not sys.__stdin__.isatty():
             print('(hbnb) ', end='')
         return stop
 
@@ -169,13 +194,12 @@ class HBNBCommand(cmd.Cmd):
             print(result)
             return
 
-        if arg not in all:
+        for key in all.keys():
+            if key.find(arg) != -1:
+                result.append(all[key].__str__())
+        if len(result) <= 0:
             print("** class doesn't exist **")
             return
-
-        for key in all.keys():
-            if key.find(arg):
-                result.append(all[key].__str__())
         print(result)
 
     def help_all(self):
