@@ -62,9 +62,13 @@ class HBNBCommand(cmd.Cmd):
             id = ''
 
         args = re.search(r",.+?\)", line)
+        evl_dict = ''
         if args:
             args = args.group(0)[1:-1].strip()
-            evl_dict = ast.literal_eval(args)
+            try:
+                evl_dict = ast.literal_eval(args)
+            except Exception:
+                pass
             if not isinstance(evl_dict, dict):
                 args = ' '.join(args.split(','))
         else:
@@ -222,9 +226,6 @@ class HBNBCommand(cmd.Cmd):
             the change into the JSON Storage file
         '''
         args = shlex.split(arg)
-        print(args)
-        print(args[2])
-
         cls = id = attr = val = ''
 
         if len(args) >= 1:
@@ -248,7 +249,7 @@ class HBNBCommand(cmd.Cmd):
         arg_section = ''
         if len(args) >= 3:
             arg_section = arg.split(None, 2)[2]
-
+            evaled_args = ''
             try:
                 evaled_args = ast.literal_eval(arg_section)
             except (SyntaxError, ValueError, AssertionError):
