@@ -1,1 +1,3 @@
-# will be updated later
+# AirBnB clone - The console
+
+Console part of the AirBnB clone
