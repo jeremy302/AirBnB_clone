@@ -4,15 +4,15 @@ This project is the first stage on  building a clone of the AirBnB website. This
 
 ## How to Use
 
-    1. After cloning the repository locate the "console.py" file and run it 
-    ```
-    AirBnB_clone$ ./console.py 
-    ```
-    Then a promp will appear like this
-    ```
-    (hbnb)
-    ```
-    Now u can Use our built in commands
+1. After cloning the repository locate the "console.py" file and run it 
+```
+AirBnB_clone$ ./console.py 
+```
+Then a promp will appear like this
+```
+(hbnb)
+```
+Now u can Use our built in commands
 
 ### Commands
 
