@@ -6,6 +6,7 @@ import cmd
 import sys
 import shlex
 import re
+import ast
 from models.__init__ import storage
 from models.base_model import BaseModel
 from models.user import User
@@ -62,8 +63,10 @@ class HBNBCommand(cmd.Cmd):
 
         args = re.search(r",.+?\)", line)
         if args:
-            args = args.group(0)[1:-1]
-            args = ' '.join(args.split(','))
+            args = args.group(0)[1:-1].strip()
+            evl_dict = ast.literal_eval(args)
+            if not isinstance(evl_dict, dict):
+                args = ' '.join(args.split(','))
         else:
             args = ''
 
@@ -219,6 +222,9 @@ class HBNBCommand(cmd.Cmd):
             the change into the JSON Storage file
         '''
         args = shlex.split(arg)
+        print(args)
+        print(args[2])
+
         cls = id = attr = val = ''
 
         if len(args) >= 1:
@@ -238,24 +244,45 @@ class HBNBCommand(cmd.Cmd):
         if key not in storage.all():
             print("** no instance found **")
             return
+
+        arg_section = ''
         if len(args) >= 3:
-            attr = args[2]
+            arg_section = arg.split(None, 2)[2]
+
+            try:
+                evaled_args = ast.literal_eval(arg_section)
+            except (SyntaxError, ValueError, AssertionError):
+                pass
+
+            if isinstance(evaled_args, dict):
+                arg_section = evaled_args
+            else:
+                attr = args[2]
         else:
             print("** attribute name missing **")
             return
         if len(args) >= 4:
-            val = args[3]
+            if not isinstance(arg_section, dict):
+                val = args[3]
         else:
             print("** value missing **")
             return
 
         obj = storage.all()[key]
-        # type cast the value depends on the attribute
-        if attr in self.attr_types:
-            val = self.attr_types[attr](val)
-        new_attr = {attr: val}
-        # update the object attributes dictionary
-        obj.__dict__.update(new_attr)
+        if isinstance(arg_section, dict):
+            # type cast the value depends on the attribute
+            for key in arg_section.keys():
+                if key in self.attr_types:
+                    arg_section[key] = self.attr_types[key](arg_section[key])
+            # update the object attributes dictionary
+            obj.__dict__.update(arg_section)
+        else:
+            # type cast the value depends on the attribute
+            if attr in self.attr_types:
+                val = self.attr_types[attr](val)
+            new_attr = {attr: val}
+            # update the object attributes dictionary
+            obj.__dict__.update(new_attr)
         obj.save()
 
     def help_update(self):
