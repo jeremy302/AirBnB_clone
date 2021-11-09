@@ -48,7 +48,7 @@ class HBNBCommand(cmd.Cmd):
 
         cls = re.search(r".+?\.", line)
         cmd = re.search(r"\..+?\(", line)
-        if not cls and not cmd:
+        if not cls or not cmd:
             return line
 
         cls = cls.group(0)[:-1]
@@ -81,7 +81,7 @@ class HBNBCommand(cmd.Cmd):
         if not sys.__stdin__.isatty():
             print('(hbnb)')
 
-    def emptyline():
+    def emptyline(self):
         ''' overrides the bhavior of an empty line'''
         pass
 
