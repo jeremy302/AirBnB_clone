@@ -116,7 +116,7 @@ class HBNBCommand(cmd.Cmd):
         if key not in all:
             print("** no instance found **")
             return
-        print(all[key].__str__)
+        print(all[key])
 
     def help_show(self):
         """ prints documentation for the show command """
