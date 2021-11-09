@@ -17,7 +17,7 @@ Now u can Use our built in commands
 ### Commands
 
 |     command      |       Description       |        Usage       |
-|:-----------------|:-----------------------:|-------------------:|
+|:-----------------|:-----------------------:|:-------------------:|
 | EOF  |  the EOF exits the program   |    EOF     |
 | all  |  Prints all string representation of all instances based or not on the class name| all <className>  |
 | count|  counts how many instances of class created and saved| count <class_name> |
