@@ -36,7 +36,8 @@ class HBNBCommand(cmd.Cmd):
             }
 
     def precmd(self, line):
-        """format command line for the dot.command syntax.
+        """This function gets the line before it gets processed
+        and here we can reformat command line for the dot.command syntax.
         Usage: <class name>.<command>([<id> [<*args> or <**kwargs>]])
         (Brackets denote optional fields in usage example.)
         """
@@ -46,35 +47,63 @@ class HBNBCommand(cmd.Cmd):
         # dosen't need reformatting
         if not ('.' in line and '(' in line and ')' in line):
             return line
-
+        # use this string as a refernece to the regex
+        # User.update(id, {"first_name":"elmahdi", "email":"test@alx.com"})
+        # this finds the class name from the start
+        # of the line to the first dot it encounters [User.]
         cls = re.search(r".+?\.", line)
+        # this finds the command from the first
+        # dot it encounters to the first left brace [.update(]
         cmd = re.search(r"\..+?\(", line)
+        # checking if one of them is not found then syntax is wrong
         if not cls or not cmd:
+            # so i just return the line as it is and the
+            # cmd class will return a syntax error
             return line
 
-        cls = cls.group(0)[:-1]
-        cmd = cmd.group(0)[1:-1]
-
-        id = re.search(r"\(.+?\,|\(.+?\)", line)
+        cls = cls.group(0)[:-1]  # changing [User.] to [User]
+        cmd = cmd.group(0)[1:-1]  # changing [.update(] to [update]
+        # this searchs for the id in both cases where
+        # there will be just the id as arguments like
+        # User.show(id)
+        # and when there is more arguments after the id
+        # like in the update function
+        id = re.search(r"\(.+?\,|\(.+?\)", line)  # finds [(id,]
         if id:
-            id = id.group(0)[1:-1]
+            id = id.group(0)[1:-1]  # change [(id,] to [id]
         else:
+            # if not found make it empty string
+            # because this will be used later
             id = ''
 
+        # this finds the rest of arguments either are normal arguments
+        # or a dictionary they will always be between a comman "," and a ")"
+        # this find [, {"first_name":"elmahdi", "email":"test@alx.com"})]
         args = re.search(r",.+?\)", line)
         evl_dict = ''
         if args:
+            # change [, {"first_name":"elmahdi", "email":"test@alx.com"})]
+            # to [{"first_name":"elmahdi", "email":"test@alx.com"}]
             args = args.group(0)[1:-1].strip()
             try:
+                # trying to cast it to a dict
                 evl_dict = ast.literal_eval(args)
             except Exception:
-                pass
+                pass  # means it's not a dict
+            # if not dict so args are normal args separated with commas
             if not isinstance(evl_dict, dict):
+                # i split on commas and join them back with space
                 args = ' '.join(args.split(','))
+        # if nor arguments found by the regex means there is not args
         else:
+            # store an empty string in it cuz this var will be used later
             args = ''
-
+        # refomating the line to the normal way
         new_line = "{} {} {} {}".format(cmd, cls, id, args)
+        # so this
+        # User.update(id, {"first_name":"elmahdi", "email":"test@alx.com"})
+        # will become this
+        # update User id {"first_name":"elmahdi", "email":"test@alx.com"}
         return new_line
 
     def postcmd(self, stop, line):
