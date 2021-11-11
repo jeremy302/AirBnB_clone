@@ -112,11 +112,6 @@ class HBNBCommand(cmd.Cmd):
             print('(hbnb) ', end='')
         return stop
 
-    def preloop(self):
-        """Prints the prompt when isatty is false"""
-        if not sys.__stdin__.isatty():
-            print('(hbnb)')
-
     def emptyline(self):
         ''' overrides the bhavior of an empty line'''
         pass
