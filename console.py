@@ -111,8 +111,8 @@ class HBNBCommand(cmd.Cmd):
             args = ''
         # refomating the line to the normal way
         new_line = "{} {} {} {}".format(cmd,
-                                        cls.strip(['"', "'"]),
-                                        id.strip(['"', "'"]),
+                                        cls.strip("\"'"),
+                                        id.strip("\"'"),
                                         args)
         # so this
         # User.update(id, {"first_name":"elmahdi", "email":"test@alx.com"})
@@ -170,7 +170,7 @@ class HBNBCommand(cmd.Cmd):
         ''' prints the string representation of an instance
             based on the class name and id
         '''
-        args = arg.split()
+        args = shlex.split(arg)
 
         if len(args) >= 1:
             cls = args[0]
@@ -202,7 +202,7 @@ class HBNBCommand(cmd.Cmd):
         ''' Deletes an instance based on the class name and id
             and saves the change into the JSON Storage file
         '''
-        args = arg.split()
+        args = shlex.split(arg)
 
         if len(args) >= 1:
             cls = args[0]
