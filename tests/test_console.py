@@ -63,25 +63,25 @@ class TestHBNBCommand(TestCase):
             # no arg
             clio(sio)
             app.onecmd("create")
-            self.assertEquals(sio.getvalue(), "** class name missing **\n")
+            self.assertEqual(sio.getvalue(), "** class name missing **\n")
 
             # invalid arg
             clio(sio)
             app.onecmd("create ABC")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             # case-sensitivity
             app.onecmd("create basemodel")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("create Basemodel")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("create Base")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("create baseModel")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
 
             # valid arg
@@ -110,25 +110,25 @@ class TestHBNBCommand(TestCase):
             # missing model
             clio(sio)
             app.onecmd("show")
-            self.assertEquals(sio.getvalue(), "** class name missing **\n")
+            self.assertEqual(sio.getvalue(), "** class name missing **\n")
 
             # invalid model
             clio(sio)
             app.onecmd("show ABC")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             # case-sensitivity
             app.onecmd("show basemodel ")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("show Basemodel")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("show Base")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("create baseModel")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
 
             # missing id
@@ -178,10 +178,10 @@ class TestHBNBCommand(TestCase):
             clio(sio)
             obj = BaseModel()
             app.onecmd("show ABC {}".format(obj.id)) # valid id
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("show ABC {}".format(str(uuid4()))) # invalid id
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
 
 
@@ -194,25 +194,25 @@ class TestHBNBCommand(TestCase):
             # missing model
             clio(sio)
             app.onecmd("destroy")
-            self.assertEquals(sio.getvalue(), "** class name missing **\n")
+            self.assertEqual(sio.getvalue(), "** class name missing **\n")
 
             # invalid model
             clio(sio)
             app.onecmd("destroy ABC")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             # case-sensitivity
             app.onecmd("destroy basemodel ")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("destroy Basemodel")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("destroy Base")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("destroy baseModel")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
 
             # missing id
@@ -249,16 +249,16 @@ class TestHBNBCommand(TestCase):
             objs.clear()
             storage.reload()
             self.assertTrue(key not in storage.all())
-            self.assertEquals(sio.getvalue(), '')
+            self.assertEqual(sio.getvalue(), '')
 
             # precedence
             clio(sio)
             obj = BaseModel()
             app.onecmd("destroy ABC {}".format(obj.id)) # valid id
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("destroy ABC {}".format(str(uuid4()))) # invalid id
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
 
 
@@ -271,20 +271,20 @@ class TestHBNBCommand(TestCase):
             # invalid model
             clio(sio)
             app.onecmd("all ABC")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             # case-sensitivity
             app.onecmd("all basemodel ")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("all Basemodel")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("all Base")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("all baseModel")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
 
             # valid args
@@ -297,7 +297,7 @@ class TestHBNBCommand(TestCase):
             app.onecmd("all")
             siov = sio.getvalue()
             self.assertTrue(siov.endswith('\n'))
-            self.assertEquals(sorted(json.loads(siov)),
+            self.assertEqual(sorted(json.loads(siov)),
                               sorted([str(v) for v in storage.all().values()]))
 
             clio(sio)
@@ -309,7 +309,7 @@ class TestHBNBCommand(TestCase):
             app.onecmd("all BaseModel")
             siov = sio.getvalue()
             self.assertTrue(siov.endswith('\n'))
-            self.assertEquals(sorted(json.loads(siov)),
+            self.assertEqual(sorted(json.loads(siov)),
                               sorted([str(v) for v in storage.all().values()
                                       if type(v) is BaseModel]))
 
@@ -323,25 +323,25 @@ class TestHBNBCommand(TestCase):
             # missing model
             clio(sio)
             app.onecmd("update")
-            self.assertEquals(sio.getvalue(), "** class name missing **\n")
+            self.assertEqual(sio.getvalue(), "** class name missing **\n")
 
             # invalid model
             clio(sio)
             app.onecmd("update ABC")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             # case-sensitivity
             app.onecmd("update basemodel ")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("update Basemodel")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("update Base")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("update baseModel")
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
 
             # missing id
@@ -385,7 +385,7 @@ class TestHBNBCommand(TestCase):
             'BaseModel', obj.id, obj.__dict__))
 
             app.onecmd('update BaseModel {} email "abc@def.com"'.format(obj.id))
-            self.assertEqual(sio.getvalue(), '\n')
+            self.assertEqual(sio.getvalue(), '')
             self.assertEqual(getattr(obj, 'email', ''), 'abc@def.com')
             # persistence
             storage.all().clear()
@@ -398,7 +398,7 @@ class TestHBNBCommand(TestCase):
             obj = storage.all()[key]
             app.onecmd('update BaseModel {} email "abcd@def.com" name ghk'
                        .format(obj.id))
-            self.assertEqual(sio.getvalue(), '\n')
+            self.assertEqual(sio.getvalue(), '')
             self.assertEqual(getattr(obj, 'email', ''), 'abcd@def.com')
             self.assertFalse(hasattr(obj, 'name'))
 
@@ -407,15 +407,18 @@ class TestHBNBCommand(TestCase):
             clio(sio)
             obj = BaseModel()
             app.onecmd("update ABC {}".format(obj.id)) # valid id
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)  # don't forget to clear buffer
             app.onecmd("update ABC {}".format(str(uuid4()))) # invalid id
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
             app.onecmd("update ABC {} email".format(
                 obj.id)) # valid id and attribute
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
             app.onecmd('update ABC {} email "abc@123.com"'.format(
                 obj.id)) # valid id, attribute and value
-            self.assertEquals(sio.getvalue(), "** class doesn't exist **\n")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
     def test_8(self):
         '''tests for task 8 in console app and User class'''
