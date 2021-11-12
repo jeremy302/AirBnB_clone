@@ -233,7 +233,7 @@ class HBNBCommand(cmd.Cmd):
         for key in all.keys():
             if key.find(arg) != -1:
                 result.append(all[key].__str__())
-        if len(result) <= 0:
+        if len(result) <= 0 and arg.strip() not in self.classes:
             print("** class doesn't exist **")
             return
         print(result)
