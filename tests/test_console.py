@@ -39,11 +39,10 @@ class TestHBNBCommand(TestCase):
         with patch('sys.stdout', new=sio) as f:
             app: HBNBCommand = mkapp()
 
-            ## TODO: help, quit and EOF validation
+            # TODO: help, quit and EOF validation
             # help not empty
             app.onecmd("help")
             self.assertTrue(sio.getvalue())
-
 
     def test_7(self):
         ''' task 7 test '''
@@ -59,7 +58,7 @@ class TestHBNBCommand(TestCase):
         with patch('sys.stdout', new=sio) as f:
             app: HBNBCommand = mkapp()
 
-            ## create
+            # create
             # no arg
             clio(sio)
             app.onecmd("create")
@@ -82,7 +81,6 @@ class TestHBNBCommand(TestCase):
             clio(sio)
             app.onecmd("create baseModel")
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
-
 
             # valid arg
             clio(sio)
@@ -130,7 +128,6 @@ class TestHBNBCommand(TestCase):
             app.onecmd("create baseModel")
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
-
             # missing id
             clio(sio)
             app.onecmd("show BaseModel")
@@ -146,13 +143,13 @@ class TestHBNBCommand(TestCase):
             clio(sio)
             app.onecmd("show BaseModel {}".format(str(uuid4())))
             self.assertEqual(sio.getvalue(), "** no instance found **\n")
-            
+
             # valid args
             clio(sio)
             obj = BaseModel()
             # correct string representation
-            self.assertEqual(str(obj), '[{}] ({}) {}'.format(
-            'BaseModel', obj.id, obj.__dict__))
+            self.assertEqual(str(obj), '[{}] ({}) {}'.
+                             format('BaseModel', obj.id, obj.__dict__))
             key = 'BaseModel.{}'.format(obj.id)
             app.onecmd("show BaseModel {}".format(obj.id))
             self.assertEqual(sio.getvalue(), str(obj)+'\n')
@@ -162,13 +159,13 @@ class TestHBNBCommand(TestCase):
             app.onecmd("show BaseModel {}".format(obj.id))
             self.assertEqual(sio.getvalue(), str(obj)+'\n')
 
-            ### ???
+            # ???
             # clio(sio)
             # obj.id=str(uuid4())
             # key = 'BaseModel.{}'.format(obj.id)
             # app.onecmd("show BaseModel {}".format(obj.id))
             # self.assertEqual(sio.getvalue(), str(obj)+'\n')
-            
+
             del storage.all()[key]
             clio(sio)
             app.onecmd("show BaseModel {}".format(obj.id))
@@ -177,19 +174,12 @@ class TestHBNBCommand(TestCase):
             # precedence
             clio(sio)
             obj = BaseModel()
-            app.onecmd("show ABC {}".format(obj.id)) # valid id
+            app.onecmd("show ABC {}".format(obj.id))  # valid id
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
-            app.onecmd("show ABC {}".format(str(uuid4()))) # invalid id
+            app.onecmd("show ABC {}".format(str(uuid4())))  # invalid id
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
-
-
-
-            ##
-            ##
-            ##
-            ##
             # destroy
             # missing model
             clio(sio)
@@ -214,7 +204,6 @@ class TestHBNBCommand(TestCase):
             app.onecmd("destroy baseModel")
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
-
             # missing id
             clio(sio)
             app.onecmd("destroy BaseModel")
@@ -230,14 +219,14 @@ class TestHBNBCommand(TestCase):
             clio(sio)
             app.onecmd("destroy BaseModel {}".format(str(uuid4())))
             self.assertEqual(sio.getvalue(), "** no instance found **\n")
-            
+
             # valid args
             clio(sio)
             obj = BaseModel()
             storage.save()
             # correct string representation
-            self.assertEqual(str(obj), '[{}] ({}) {}'.format(
-            'BaseModel', obj.id, obj.__dict__))
+            self.assertEqual(str(obj), '[{}] ({}) {}'.
+                             format('BaseModel', obj.id, obj.__dict__))
             key = 'BaseModel.{}'.format(obj.id)
             storage.all().clear()
             storage.reload()
@@ -254,19 +243,12 @@ class TestHBNBCommand(TestCase):
             # precedence
             clio(sio)
             obj = BaseModel()
-            app.onecmd("destroy ABC {}".format(obj.id)) # valid id
+            app.onecmd("destroy ABC {}".format(obj.id))  # valid id
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
-            app.onecmd("destroy ABC {}".format(str(uuid4()))) # invalid id
+            app.onecmd("destroy ABC {}".format(str(uuid4())))  # invalid id
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
-
-
-
-            ##
-            ##
-            ##
-            ##
             # all
             # invalid model
             clio(sio)
@@ -286,39 +268,32 @@ class TestHBNBCommand(TestCase):
             app.onecmd("all baseModel")
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
-
             # valid args
             clio(sio)
             obj = BaseModel()
             # correct string representation
-            self.assertEqual(str(obj), '[{}] ({}) {}'.format(
-            'BaseModel', obj.id, obj.__dict__))
+            self.assertEqual(str(obj), '[{}] ({}) {}'.
+                             format('BaseModel', obj.id, obj.__dict__))
             key = 'BaseModel.{}'.format(obj.id)
             app.onecmd("all")
             siov = sio.getvalue()
             self.assertTrue(siov.endswith('\n'))
             self.assertEqual(sorted(json.loads(siov)),
-                              sorted([str(v) for v in storage.all().values()]))
+                             sorted([str(v) for v in storage.all().values()]))
 
             clio(sio)
             obj = BaseModel()
             # correct string representation
-            self.assertEqual(str(obj), '[{}] ({}) {}'.format(
-            'BaseModel', obj.id, obj.__dict__))
+            self.assertEqual(str(obj), '[{}] ({}) {}'.
+                             format('BaseModel', obj.id, obj.__dict__))
             key = 'BaseModel.{}'.format(obj.id)
             app.onecmd("all BaseModel")
             siov = sio.getvalue()
             self.assertTrue(siov.endswith('\n'))
             self.assertEqual(sorted(json.loads(siov)),
-                              sorted([str(v) for v in storage.all().values()
-                                      if type(v) is BaseModel]))
+                             sorted([str(v) for v in storage.all().values()
+                                    if type(v) is BaseModel]))
 
-            
-
-            ##
-            ##
-            ##
-            ##
             # update
             # missing model
             clio(sio)
@@ -342,7 +317,6 @@ class TestHBNBCommand(TestCase):
             clio(sio)
             app.onecmd("update baseModel")
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
-
 
             # missing id
             clio(sio)
@@ -375,16 +349,18 @@ class TestHBNBCommand(TestCase):
             obj = BaseModel()
             app.onecmd("update BaseModel {} updated_at    ".format(obj.id))
             self.assertEqual(sio.getvalue(), "** value missing **\n")
-            
+
             # valid args
             clio(sio)
             obj = BaseModel()
             key = 'BaseModel.{}'.format(obj.id)
             # correct string representation
-            self.assertEqual(str(obj), '[{}] ({}) {}'.format(
-            'BaseModel', obj.id, obj.__dict__))
+            self.assertEqual(str(obj), '[{}] ({}) {}'.
+                             format('BaseModel', obj.id, obj.__dict__))
 
-            app.onecmd('update BaseModel {} email "abc@def.com"'.format(obj.id))
+            app.onecmd(
+                       'update BaseModel {} email "abc@def.com"'.format(obj.id)
+                       )
             self.assertEqual(sio.getvalue(), '')
             self.assertEqual(getattr(obj, 'email', ''), 'abc@def.com')
             # persistence
@@ -392,7 +368,7 @@ class TestHBNBCommand(TestCase):
             storage.reload()
             self.assertEqual(getattr(storage.all()[key], 'email', ''),
                              'abc@def.com')
-            
+
             # extra args ignored
             clio(sio)
             obj = storage.all()[key]
@@ -402,22 +378,21 @@ class TestHBNBCommand(TestCase):
             self.assertEqual(getattr(obj, 'email', ''), 'abcd@def.com')
             self.assertFalse(hasattr(obj, 'name'))
 
-
             # precedence
             clio(sio)
             obj = BaseModel()
-            app.onecmd("update ABC {}".format(obj.id)) # valid id
+            app.onecmd("update ABC {}".format(obj.id))  # valid id
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)  # don't forget to clear buffer
-            app.onecmd("update ABC {}".format(str(uuid4()))) # invalid id
+            app.onecmd("update ABC {}".format(str(uuid4())))  # invalid id
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd("update ABC {} email".format(
-                obj.id)) # valid id and attribute
+                obj.id))  # valid id and attribute
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
             clio(sio)
             app.onecmd('update ABC {} email "abc@123.com"'.format(
-                obj.id)) # valid id, attribute and value
+                obj.id))  # valid id, attribute and value
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
     def test_8(self):
