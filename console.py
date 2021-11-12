@@ -46,7 +46,14 @@ class HBNBCommand(cmd.Cmd):
         # check if the line has normal commands and
         # dosen't need reformatting
         if not ('.' in line and '(' in line and ')' in line):
-            return ' '.join(shlex.split(line))
+            splt_line = line.split(' ')
+            if len(splt_line) > 3:
+                final_line = '{} {} {} {}'.format(splt_line[0],
+                                                  splt_line[1],
+                                                  splt_line[2],
+                                                  ' '.join(splt_line[3:]))
+            else:
+                return ' '.join(shlex.split(line))
         # use this string as a refernece to the regex
         # User.update(id, {"first_name":"elmahdi", "email":"test@alx.com"})
         # this finds the class name from the start
@@ -234,7 +241,7 @@ class HBNBCommand(cmd.Cmd):
             return
 
         for key in all.keys():
-            if key.find(arg) != -1:
+            if key.find(arg.strip()) != -1 and arg.strip() in self.classes:
                 result.append(all[key].__str__())
         if len(result) <= 0 and arg.strip() not in self.classes:
             print("** class doesn't exist **")
