@@ -251,7 +251,6 @@ class HBNBCommand(cmd.Cmd):
         if len(result) <= 0 and arg not in self.classes:
             print("** class doesn't exist **")
             return
-        print("'"+arg+"'")
         print(result)
 
     def help_all(self):
