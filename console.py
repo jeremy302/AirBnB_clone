@@ -46,7 +46,7 @@ class HBNBCommand(cmd.Cmd):
         # check if the line has normal commands and
         # dosen't need reformatting
         if not ('.' in line and '(' in line and ')' in line):
-            return line
+            return ' '.join(shlex.split(line))
         # use this string as a refernece to the regex
         # User.update(id, {"first_name":"elmahdi", "email":"test@alx.com"})
         # this finds the class name from the start
@@ -99,7 +99,10 @@ class HBNBCommand(cmd.Cmd):
             # store an empty string in it cuz this var will be used later
             args = ''
         # refomating the line to the normal way
-        new_line = "{} {} {} {}".format(cmd, cls, id, args)
+        new_line = "{} {} {} {}".format(cmd,
+                                        cls.strip(['"', "'"]),
+                                        id.strip(['"', "'"]),
+                                        args)
         # so this
         # User.update(id, {"first_name":"elmahdi", "email":"test@alx.com"})
         # will become this
