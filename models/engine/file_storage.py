@@ -36,7 +36,6 @@ class FileStorage:
             json.dump(objs, file)
 
     def reload(self):
-        ''' load objects from a file '''
         clss = models.models
         if isfile(self.__file_path):
             with open(self.__file_path, 'r') as file:
