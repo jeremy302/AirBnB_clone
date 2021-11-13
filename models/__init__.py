@@ -11,7 +11,7 @@ models = {}
 def import_models():
     '''import modules after instantiating a storage instace
     to fix circular imports'''
-    global models
+    global models, BaseModel, Amenity, City, Place, Review, State, User
     from .base_model import BaseModel
     from .amenity import Amenity
     from .city import City
