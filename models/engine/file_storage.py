@@ -47,3 +47,6 @@ class FileStorage:
                     self.__objects[k] = cls(**v)
                 # self.__objects = {k: clss[v['__class__']](**v)
                 #                   for k, v in js_objs.items()}
+
+
+                
