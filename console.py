@@ -35,9 +35,9 @@ class HBNBCommand(cmd.Cmd):
 
     def __init__(self):
         """Initializes command interpreter"""
-        super().__init__()
         # determines prompt for interactive/non-interactive modes
         self.prompt = '(hbnb) ' if sys.stdin.isatty() else ''
+        super().__init__()
 
     def precmd(self, line):
         """This function gets the line before it gets processed
