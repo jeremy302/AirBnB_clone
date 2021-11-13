@@ -134,18 +134,18 @@ class HBNBCommand(cmd.Cmd):
         '''method for the quit command'''
         exit()
 
-    # def help_quit(self):
-    #     '''prints the documentation for the command quit'''
-    #     print("Quit command to exit the program\n")
+    def help_quit(self):
+        '''prints the documentation for the command quit'''
+        print("Quit command to exit the program\n")
 
     def do_EOF(self, arg):
         '''method that handles the EOF and exit the program'''
         print()
         exit()
 
-    # def help_EOF(self):
-    #     """ Prints the documentation for EOF """
-    #     print("The EOF exits the program\n")
+    def help_EOF(self):
+        """ Prints the documentation for EOF """
+        print("The EOF exits the program\n")
 
     def do_create(self, arg):
         ''' creates a new instance of the class passed as argument
@@ -161,10 +161,10 @@ class HBNBCommand(cmd.Cmd):
         storage.save()
         print(new_instance.id)
 
-    # def help_create(self):
-    #     """ prints Documentation for the create command """
-    #     print("creates a new instance of the class passed as argument")
-    #     print("[Usage]: create <className>\n")
+    def help_create(self):
+        """ prints Documentation for the create command """
+        print("creates a new instance of the class passed as argument")
+        print("[Usage]: create <className>\n")
 
     def do_show(self, arg):
         ''' prints the string representation of an instance
@@ -193,10 +193,10 @@ class HBNBCommand(cmd.Cmd):
             return
         print(all[key])
 
-    # def help_show(self):
-    #     """ prints documentation for the show command """
-    #     print("prints the string representation of an instance")
-    #     print("[Usage]: show <className> <objectId>\n")
+    def help_show(self):
+        """ prints documentation for the show command """
+        print("prints the string representation of an instance")
+        print("[Usage]: show <className> <objectId>\n")
 
     def do_destroy(self, arg):
         ''' Deletes an instance based on the class name and id
@@ -227,10 +227,10 @@ class HBNBCommand(cmd.Cmd):
         del (all[key])
         storage.save()
 
-    # def help_destroy(self):
-    #     ''' prints documentaion for the destroy command '''
-    #     print("Deletes an instance based on the class name and id")
-    #     print("[Usage]: destroy <className> <objectId>\n")
+    def help_destroy(self):
+        ''' prints documentaion for the destroy command '''
+        print("Deletes an instance based on the class name and id")
+        print("[Usage]: destroy <className> <objectId>\n")
 
     def do_all(self, arg):
         ''' Prints all string representation of all instances
@@ -253,11 +253,11 @@ class HBNBCommand(cmd.Cmd):
             return
         print(result)
 
-    # def help_all(self):
-    #     ''' prints documentaion for the all command '''
-    #     print("Prints all string representation of all instances")
-    #     print("based or not on the class name")
-    #     print("[Usage]: all <className>\n")
+    def help_all(self):
+        ''' prints documentaion for the all command '''
+        print("Prints all string representation of all instances")
+        print("based or not on the class name")
+        print("[Usage]: all <className>\n")
 
     def do_update(self, arg):
         '''  Updates an instance based on the class name
@@ -325,10 +325,10 @@ class HBNBCommand(cmd.Cmd):
             obj.__dict__.update(new_attr)
         obj.save()
 
-    # def help_update(self):
-    #     """ prints Documentation for the update command """
-    #     print("Updates an object's attributes")
-    #     print("Usage: update <className> <id> <attName> <attVal>\n")
+    def help_update(self):
+        """ prints Documentation for the update command """
+        print("Updates an object's attributes")
+        print("Usage: update <className> <id> <attName> <attVal>\n")
 
     def do_count(self, args):
         """Counts the number of class instances created"""
@@ -338,9 +338,9 @@ class HBNBCommand(cmd.Cmd):
                 count += 1
         print(count)
 
-    # def help_count(self):
-    #     """ prints the documentation of the count command"""
-    #     print("Usage: count <class_name>")
+    def help_count(self):
+        """ prints the documentation of the count command"""
+        print("Usage: count <class_name>")
 
 
 if __name__ == '__main__':
