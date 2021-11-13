@@ -6,7 +6,9 @@ import models
 
 
 def redo(self):
-    ''' loads data from file '''
+    ''' loads data from file
+    krijf
+    dkddn'''
     clss = models.models
     if not isfile(self._FileStorage__file_path):
         return
