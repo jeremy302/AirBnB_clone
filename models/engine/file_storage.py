@@ -32,15 +32,3 @@ class FileStorage:
                 v = r_objs[k]
                 objs[k] = v.to_dict()
             json.dump(objs, file)
-
-    def reload(self):
-        ''' loads data from file '''
-        clss = models.models
-        if not isfile(self.__file_path):
-            return
-        with open(self.__file_path, 'r') as file:
-            js_objs = json.load(file)
-            self.__objects.clear()
-            for k, v in js_objs.items():
-                cls = clss[v['__class__']]
-                self.__objects[k] = cls(**v)
