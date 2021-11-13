@@ -7,6 +7,8 @@ models = {}
 
 
 def import_models():
+    '''import modules after instantiating a storage instace
+    to fix circular imports'''
     global models
     from .base_model import BaseModel
     from .amenity import Amenity
