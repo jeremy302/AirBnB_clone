@@ -4,5 +4,6 @@ from .base_model import BaseModel
 
 
 class City(BaseModel):
+    ''' a City class '''
     state_id = ''
     name = ''

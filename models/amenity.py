@@ -4,4 +4,5 @@ from .base_model import BaseModel
 
 
 class Amenity(BaseModel):
+    ''' an Amenity class '''
     name = ''

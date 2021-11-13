@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-''' module for base_model tests '''
+''' module for user tests '''
 from unittest import TestCase
 import json
 import re
@@ -10,9 +10,11 @@ from time import sleep
 from models.base_model import BaseModel
 from models.user import User
 
+
 class TestUser(TestCase):
     ''' tests User class '''
     def test_8(self):
+        ''' task 8 tests '''
         self.assertTrue(issubclass(User, BaseModel))
         self.assertEqual(User.email, '')
         self.assertEqual(User.password, '')

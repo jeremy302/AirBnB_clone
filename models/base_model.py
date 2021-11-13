@@ -4,6 +4,7 @@ from uuid import uuid4
 from datetime import datetime
 from . import storage
 
+
 class BaseModel:
     ''' class of the base model of higher-level data models '''
     def __init__(self, *arg, **kwargs):
