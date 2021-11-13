@@ -37,7 +37,7 @@ class HBNBCommand(cmd.Cmd):
 
     def preloop(self):
         """Prints the prompt when isatty is false"""
-        if not sys.__stdin__.isatty():
+        if not sys.stdin.isatty():
             print('(hbnb)')
 
     def precmd(self, line):
@@ -127,7 +127,7 @@ class HBNBCommand(cmd.Cmd):
 
     def postcmd(self, stop, line):
         """Prints the prompt when isatty is false"""
-        if not sys.__stdin__.isatty():
+        if not sys.stdin.isatty():
             print('(hbnb) ', end='')
         return stop
 
@@ -156,7 +156,6 @@ class HBNBCommand(cmd.Cmd):
 
     def do_EOF(self, arg):
         '''method that handles the EOF and exit the program'''
-        print()
         exit()
 
     def help_EOF(self):
