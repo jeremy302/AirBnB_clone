@@ -38,7 +38,7 @@ class HBNBCommand(cmd.Cmd):
         """
         super().__init__()
         # determines prompt for interactive/non-interactive modes
-        prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
+        self.prompt = '(hbnb) ' if sys.stdin.isatty() else ''
 
     def preloop(self):
         """Prints the prompt when isatty is false"""
@@ -133,7 +133,7 @@ class HBNBCommand(cmd.Cmd):
     def postcmd(self, stop, line):
         """Prints the prompt when isatty is false"""
         if not sys.stdin.isatty():
-            print('(hbnb) ', end='')
+            print('(hbnb) ')
         return stop
 
     # def print_topics(self, header, cmds, cmdlen, maxcol):
