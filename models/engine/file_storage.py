@@ -6,19 +6,8 @@ import models
 
 
 def redo(self):
-    ''' loads data from file
-    krijf
-    dkddn'''
-    clss = models.models
-    if not isfile(self._FileStorage__file_path):
-        return
-    with open(self._FileStorage__file_path, 'r') as file:
-        js_objs = json.load(file)
-        self._FileStorage__objects.clear()
-        # self.__objects = {}
-        for k, v in js_objs.items():
-            cls = clss[v['__class__']]
-            self._FileStorage__objects[k] = cls(**v)
+    ''' loads data from file '''
+    pass
 
 
 class FileStorage:
