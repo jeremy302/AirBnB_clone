@@ -14,6 +14,7 @@ class FileStorage:
     ''' class for persistent storage '''
     __file_path = 'file.json'
     __objects = {}
+    reload = 5
 
     def __init__(self):
         ''' initializes a storage engine '''
