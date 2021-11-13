@@ -136,14 +136,14 @@ class HBNBCommand(cmd.Cmd):
             print('(hbnb) ', end='')
         return stop
 
-    def print_topics(self, header, cmds, cmdlen, maxcol):
-        if cmds:
-            self.stdout.write("%s\n" % str(header))
-            if self.ruler:
-                self.stdout.write("%s\n" % str(self.ruler * len(header)))
-            self.columnize(cmds, maxcol-1)
-            if sys.__stdin__.isatty():
-                self.stdout.write("\n")
+    # def print_topics(self, header, cmds, cmdlen, maxcol):
+    #     if cmds:
+    #         self.stdout.write("%s\n" % str(header))
+    #         if self.ruler:
+    #             self.stdout.write("%s\n" % str(self.ruler * len(header)))
+    #         self.columnize(cmds, maxcol-1)
+    #         if sys.__stdin__.isatty():
+    #             self.stdout.write("\n")
 
     def emptyline(self):
         ''' overrides the bhavior of an empty line'''
