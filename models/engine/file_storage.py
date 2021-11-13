@@ -5,36 +5,33 @@ from os.path import isfile
 import models
 
 
-def redo(self):
-    ''' loads data from file '''
-    pass
-
-
 class FileStorage:
     ''' class for persistent storage '''
     __file_path = 'file.json'
     __objects = {}
-    reload = 5
-
-    def __init__(self):
-        ''' initializes a storage engine '''
-        pass
 
     def all(self):
         ''' gets all objects '''
-        return self.__objects
+        return self.__class__.__objects
 
     def new(self, obj):
         ''' registers a new object '''
-        key = '{}.{}'.format(obj.__class__.__name__, obj.id)
-        self.__objects[key] = obj
+        self.__class__.__objects['{}.{}'.format(
+            obj.__class__.__name__, obj.id)] = obj
 
     def save(self):
         ''' saves all objects to a file '''
-        with open(self.__file_path, 'w') as file:
-            r_objs = self.__objects
-            objs = {}
-            for k in r_objs:
-                v = r_objs[k]
-                objs[k] = v.to_dict()
+        with open(self.__class__.__file_path, 'w') as file:
+            r_objs = self.__class__.__objects
+            objs = {k: r_objs[k] if type(r_objs[k]) is dict
+                    else r_objs[k].to_dict() for k in r_objs}
             json.dump(objs, file)
+
+    def reload(self):
+        ''' load objects from a file '''
+        clss = models.models
+        if isfile(self.__class__.__file_path):
+            with open(self.__class__.__file_path, 'r') as file:
+                js_objs = json.load(file)
+                type(self).__objects = {k: clss[v['__class__']](**v)
+                                        for k, v in js_objs.items()}
