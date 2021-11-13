@@ -32,3 +32,9 @@ class FileStorage:
                 v = r_objs[k]
                 objs[k] = v.to_dict()
             json.dump(objs, file)
+
+    def reload(self):
+        ''' loads data from file '''
+        clss = models.models
+        if not isfile(self.__file_path):
+            return
