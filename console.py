@@ -132,7 +132,7 @@ class HBNBCommand(cmd.Cmd):
     def postcmd(self, stop, line):
         """Prints the prompt when isatty is false"""
         if not sys.stdin.isatty():
-            print('(hbnb) ', end='')
+            print('(hbnb) ')
         return stop
 
     # def print_topics(self, header, cmds, cmdlen, maxcol):
