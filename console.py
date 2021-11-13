@@ -34,8 +34,7 @@ class HBNBCommand(cmd.Cmd):
             }
 
     def __init__(self):
-        """Initializes the AirBnB clone command interpreter.
-        """
+        """Initializes command interpreter"""
         super().__init__()
         # determines prompt for interactive/non-interactive modes
         self.prompt = '(hbnb) ' if sys.stdin.isatty() else ''
@@ -133,7 +132,7 @@ class HBNBCommand(cmd.Cmd):
     def postcmd(self, stop, line):
         """Prints the prompt when isatty is false"""
         if not sys.stdin.isatty():
-            print('(hbnb) ')
+            print('(hbnb) ', end='')
         return stop
 
     # def print_topics(self, header, cmds, cmdlen, maxcol):
