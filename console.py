@@ -20,6 +20,8 @@ from models.review import Review
 class HBNBCommand(cmd.Cmd):
     '''HBNB Command Prompt class'''
 
+    # determines prompt for interactive/non-interactive modes
+    prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
     # available classes that can be created
     classes = {
                'BaseModel': BaseModel, 'User': User, 'Place': Place,
@@ -32,17 +34,6 @@ class HBNBCommand(cmd.Cmd):
              'max_guest': int, 'price_by_night': int,
              'latitude': float, 'longitude': float
             }
-
-    def __init__(self):
-        """Initializes command interpreter"""
-        super().__init__()
-        # determines prompt for interactive/non-interactive modes
-        self.prompt = '(hbnb) ' if sys.stdin.isatty() else ''
-
-    def preloop(self):
-        """Prints the prompt when isatty is false"""
-        if not sys.stdin.isatty():
-            print('(hbnb)')
 
     def precmd(self, line):
         """This function gets the line before it gets processed
@@ -131,18 +122,9 @@ class HBNBCommand(cmd.Cmd):
 
     def postcmd(self, stop, line):
         """Prints the prompt when isatty is false"""
-        if not sys.stdin.isatty():
-            print('(hbnb) ')
+        if not sys.__stdin__.isatty():
+            print('(hbnb) ', end='')
         return stop
-
-    # def print_topics(self, header, cmds, cmdlen, maxcol):
-    #     if cmds:
-    #         self.stdout.write("%s\n" % str(header))
-    #         if self.ruler:
-    #             self.stdout.write("%s\n" % str(self.ruler * len(header)))
-    #         self.columnize(cmds, maxcol-1)
-    #         if sys.__stdin__.isatty():
-    #             self.stdout.write("\n")
 
     def emptyline(self):
         ''' overrides the bhavior of an empty line'''
@@ -152,9 +134,18 @@ class HBNBCommand(cmd.Cmd):
         '''method for the quit command'''
         exit()
 
+    def help_quit(self):
+        '''prints the documentation for the command quit'''
+        print("Quit command to exit the program\n")
+
     def do_EOF(self, arg):
         '''method that handles the EOF and exit the program'''
+        print()
         exit()
+
+    def help_EOF(self):
+        """ Prints the documentation for EOF """
+        print("The EOF exits the program\n")
 
     def do_create(self, arg):
         ''' creates a new instance of the class passed as argument
@@ -169,6 +160,11 @@ class HBNBCommand(cmd.Cmd):
         new_instance = self.classes[arg]()
         storage.save()
         print(new_instance.id)
+
+    def help_create(self):
+        """ prints Documentation for the create command """
+        print("creates a new instance of the class passed as argument")
+        print("[Usage]: create <className>\n")
 
     def do_show(self, arg):
         ''' prints the string representation of an instance
@@ -196,6 +192,11 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
             return
         print(all[key])
+
+    def help_show(self):
+        """ prints documentation for the show command """
+        print("prints the string representation of an instance")
+        print("[Usage]: show <className> <objectId>\n")
 
     def do_destroy(self, arg):
         ''' Deletes an instance based on the class name and id
@@ -226,6 +227,11 @@ class HBNBCommand(cmd.Cmd):
         del (all[key])
         storage.save()
 
+    def help_destroy(self):
+        ''' prints documentaion for the destroy command '''
+        print("Deletes an instance based on the class name and id")
+        print("[Usage]: destroy <className> <objectId>\n")
+
     def do_all(self, arg):
         ''' Prints all string representation of all instances
             based or not on the class name.
@@ -246,6 +252,12 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
         print(result)
+
+    def help_all(self):
+        ''' prints documentaion for the all command '''
+        print("Prints all string representation of all instances")
+        print("based or not on the class name")
+        print("[Usage]: all <className>\n")
 
     def do_update(self, arg):
         '''  Updates an instance based on the class name
@@ -313,6 +325,11 @@ class HBNBCommand(cmd.Cmd):
             obj.__dict__.update(new_attr)
         obj.save()
 
+    def help_update(self):
+        """ prints Documentation for the update command """
+        print("Updates an object's attributes")
+        print("Usage: update <className> <id> <attName> <attVal>\n")
+
     def do_count(self, args):
         """Counts the number of class instances created"""
         count = 0
@@ -320,6 +337,10 @@ class HBNBCommand(cmd.Cmd):
             if args == k.split('.')[0]:
                 count += 1
         print(count)
+
+    def help_count(self):
+        """ prints the documentation of the count command"""
+        print("Usage: count <class_name>")
 
 
 if __name__ == '__main__':
