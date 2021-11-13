@@ -90,8 +90,8 @@ class TestHBNBCommand(TestCase):
             app.onecmd("create BaseModel")
             # model creation
             kid = 'BaseModel.{}'.format(sio.getvalue()[:-1])
-            self.assertTrue(kid not in objs_k and kid in storage.all()
-                            and type(storage.all()[kid]) == BaseModel)
+            self.assertTrue(kid not in objs_k and kid in storage.all() and
+                            type(storage.all()[kid]) == BaseModel)
             # saved to file
             with open(FS_path, 'r') as file:
                 tmp = json.load(file)
