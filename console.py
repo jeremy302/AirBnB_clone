@@ -20,6 +20,8 @@ from models.review import Review
 class HBNBCommand(cmd.Cmd):
     '''HBNB Command Prompt class'''
 
+    # determines prompt for interactive/non-interactive modes
+    prompt = '(hbnb) ' if sys.stdin.isatty() else ''
     # available classes that can be created
     classes = {
                'BaseModel': BaseModel, 'User': User, 'Place': Place,
@@ -32,12 +34,6 @@ class HBNBCommand(cmd.Cmd):
              'max_guest': int, 'price_by_night': int,
              'latitude': float, 'longitude': float
             }
-
-    def __init__(self):
-        """Initializes command interpreter"""
-        # determines prompt for interactive/non-interactive modes
-        self.prompt = '(hbnb) ' if sys.stdin.isatty() else ''
-        super().__init__()
 
     def precmd(self, line):
         """This function gets the line before it gets processed
