@@ -35,6 +35,4 @@ class FileStorage:
 
     def reload(self):
         ''' loads data from file '''
-        clss = models.models
-        if not isfile(self.__file_path):
-            return
+        return 4
