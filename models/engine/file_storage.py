@@ -5,7 +5,7 @@ from os.path import isfile
 import models
 
 
-def reload(self):
+def redo(self):
     ''' loads data from file '''
     clss = models.models
     if not isfile(self._FileStorage__file_path):
@@ -23,7 +23,7 @@ class FileStorage:
     ''' class for persistent storage '''
     __file_path = 'file.json'
     __objects = {}
-    reload = reload
+    reload = redo
 
     def __init__(self):
         ''' initializes a storage engine '''
