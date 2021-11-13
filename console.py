@@ -37,7 +37,7 @@ class HBNBCommand(cmd.Cmd):
         """Initializes command interpreter"""
         super().__init__()
         # determines prompt for interactive/non-interactive modes
-        self.prompt = '(hbnb) ' if sys.stdin.isatty() else '(hbnb)\n'
+        self.prompt = '(hbnb) ' if sys.stdin.isatty() else ''
 
     def preloop(self):
         """Prints the prompt when isatty is false"""
