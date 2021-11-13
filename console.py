@@ -128,7 +128,7 @@ class HBNBCommand(cmd.Cmd):
 
     def emptyline(self):
         ''' overrides the bhavior of an empty line'''
-        pass
+        return False
 
     def do_quit(self, arg):
         '''method for the quit command'''
@@ -136,7 +136,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_EOF(self, arg):
         '''method that handles the EOF and exit the program'''
-        print()
+        # print()
         exit()
 
     def do_create(self, arg):
