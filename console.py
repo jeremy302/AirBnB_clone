@@ -20,8 +20,6 @@ from models.review import Review
 class HBNBCommand(cmd.Cmd):
     '''HBNB Command Prompt class'''
 
-    # determines prompt for interactive/non-interactive modes
-    prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
     # available classes that can be created
     classes = {
                'BaseModel': BaseModel, 'User': User, 'Place': Place,
@@ -34,6 +32,13 @@ class HBNBCommand(cmd.Cmd):
              'max_guest': int, 'price_by_night': int,
              'latitude': float, 'longitude': float
             }
+
+    def __init__(self):
+        """Initializes the AirBnB clone command interpreter.
+        """
+        super().__init__()
+        # determines prompt for interactive/non-interactive modes
+        prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
 
     def preloop(self):
         """Prints the prompt when isatty is false"""
