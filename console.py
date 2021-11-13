@@ -131,6 +131,15 @@ class HBNBCommand(cmd.Cmd):
             print('(hbnb) ', end='')
         return stop
 
+    def print_topics(self, header, cmds, cmdlen, maxcol):
+        if cmds:
+            self.stdout.write("%s\n" % str(header))
+            if self.ruler:
+                self.stdout.write("%s\n" % str(self.ruler * len(header)))
+            self.columnize(cmds, maxcol-1)
+            if sys.__stdin__.isatty():
+                self.stdout.write("\n")
+
     def emptyline(self):
         ''' overrides the bhavior of an empty line'''
         pass
@@ -141,7 +150,9 @@ class HBNBCommand(cmd.Cmd):
 
     def help_quit(self):
         '''prints the documentation for the command quit'''
-        print("Quit command to exit the program\n")
+        print("Quit command to exit the program")
+        if sys.__stdin__.isatty():
+            print()
 
     def do_EOF(self, arg):
         '''method that handles the EOF and exit the program'''
@@ -150,7 +161,9 @@ class HBNBCommand(cmd.Cmd):
 
     def help_EOF(self):
         """ Prints the documentation for EOF """
-        print("The EOF exits the program\n")
+        print("The EOF exits the program")
+        if sys.__stdin__.isatty():
+            print()
 
     def do_create(self, arg):
         ''' creates a new instance of the class passed as argument
@@ -169,7 +182,9 @@ class HBNBCommand(cmd.Cmd):
     def help_create(self):
         """ prints Documentation for the create command """
         print("creates a new instance of the class passed as argument")
-        print("[Usage]: create <className>\n")
+        print("[Usage]: create <className>")
+        if sys.__stdin__.isatty():
+            print()
 
     def do_show(self, arg):
         ''' prints the string representation of an instance
@@ -201,7 +216,9 @@ class HBNBCommand(cmd.Cmd):
     def help_show(self):
         """ prints documentation for the show command """
         print("prints the string representation of an instance")
-        print("[Usage]: show <className> <objectId>\n")
+        print("[Usage]: show <className> <objectId>")
+        if sys.__stdin__.isatty():
+            print()
 
     def do_destroy(self, arg):
         ''' Deletes an instance based on the class name and id
@@ -235,7 +252,9 @@ class HBNBCommand(cmd.Cmd):
     def help_destroy(self):
         ''' prints documentaion for the destroy command '''
         print("Deletes an instance based on the class name and id")
-        print("[Usage]: destroy <className> <objectId>\n")
+        print("[Usage]: destroy <className> <objectId>")
+        if sys.__stdin__.isatty():
+            print()
 
     def do_all(self, arg):
         ''' Prints all string representation of all instances
@@ -262,7 +281,9 @@ class HBNBCommand(cmd.Cmd):
         ''' prints documentaion for the all command '''
         print("Prints all string representation of all instances")
         print("based or not on the class name")
-        print("[Usage]: all <className>\n")
+        print("[Usage]: all <className>")
+        if sys.__stdin__.isatty():
+            print()
 
     def do_update(self, arg):
         '''  Updates an instance based on the class name
@@ -333,7 +354,9 @@ class HBNBCommand(cmd.Cmd):
     def help_update(self):
         """ prints Documentation for the update command """
         print("Updates an object's attributes")
-        print("Usage: update <className> <id> <attName> <attVal>\n")
+        print("Usage: update <className> <id> <attName> <attVal>")
+        if sys.__stdin__.isatty():
+            print()
 
     def do_count(self, args):
         """Counts the number of class instances created"""
@@ -346,6 +369,8 @@ class HBNBCommand(cmd.Cmd):
     def help_count(self):
         """ prints the documentation of the count command"""
         print("Usage: count <class_name>")
+        if sys.__stdin__.isatty():
+            print()
 
 
 if __name__ == '__main__':
