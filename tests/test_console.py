@@ -152,6 +152,7 @@ class TestHBNBCommand(TestCase):
             # correct string representation
             self.assertEqual(str(obj), '[{}] ({}) {}'.format(
                 'BaseModel', obj.id, obj.__dict__))
+
             key = 'BaseModel.{}'.format(obj.id)
             app.onecmd("show BaseModel {}".format(obj.id))
             self.assertEqual(sio.getvalue(), str(obj)+'\n')
@@ -181,6 +182,7 @@ class TestHBNBCommand(TestCase):
             clio(sio)
             app.onecmd("show ABC {}".format(str(uuid4())))  # invalid id
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+
             ##
             ##
             ##
@@ -232,6 +234,7 @@ class TestHBNBCommand(TestCase):
             # correct string representation
             self.assertEqual(str(obj), '[{}] ({}) {}'.format(
                 'BaseModel', obj.id, obj.__dict__))
+
             key = 'BaseModel.{}'.format(obj.id)
             storage.all().clear()
             storage.reload()
@@ -254,10 +257,6 @@ class TestHBNBCommand(TestCase):
             app.onecmd("destroy ABC {}".format(str(uuid4())))  # invalid id
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
-            ##
-            ##
-            ##
-            ##
             # all
             # invalid model
             clio(sio)
@@ -306,10 +305,6 @@ class TestHBNBCommand(TestCase):
             except Exception as err:
                 self.assertTrue(False)
 
-            ##
-            ##
-            ##
-            ##
             # update
             # missing model
             clio(sio)
@@ -398,6 +393,7 @@ class TestHBNBCommand(TestCase):
             obj = BaseModel()
             app.onecmd("update ABC {}".format(obj.id))  # valid id
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+
             clio(sio)
             app.onecmd("update ABC {}".format(str(uuid4())))  # invalid id
             self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
