@@ -21,7 +21,7 @@ class HBNBCommand(cmd.Cmd):
     '''HBNB Command Prompt class'''
 
     # determines prompt for interactive/non-interactive modes
-    prompt = '(hbnb) ' if sys.stdin.isatty() else ''
+    prompt = '(hbnb) ' if sys.stdin.isatty() else '(hbnb) \n'
     # available classes that can be created
     classes = {
                'BaseModel': BaseModel, 'User': User, 'Place': Place,
