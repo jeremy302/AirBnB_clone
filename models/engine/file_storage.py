@@ -4,11 +4,24 @@ import json
 from os.path import isfile
 import models
 
+def reload(self):
+    ''' loads data from file '''
+    clss = models.models
+    if not isfile(self.__file_path):
+        return
+    with open(self.__file_path, 'r') as file:
+        js_objs = json.load(file)
+        self.__objects.clear()
+        # self.__objects = {}
+        for k, v in js_objs.items():
+            cls = clss[v['__class__']]
+            self.__objects[k] = cls(**v)
 
 class FileStorage:
     ''' class for persistent storage '''
     __file_path = 'file.json'
     __objects = {}
+    reload = reload
 
     def __init__(self):
         ''' initializes a storage engine '''
@@ -32,20 +45,3 @@ class FileStorage:
                 v = r_objs[k]
                 objs[k] = v.to_dict()
             json.dump(objs, file)
-    def reload(self):
-        ''' reloads data '''
-        pass
-def reload(self):
-    ''' loads data from file '''
-    clss = models.models
-    if not isfile(self.__file_path):
-        return
-    with open(self.__file_path, 'r') as file:
-        js_objs = json.load(file)
-        self.__objects.clear()
-        # self.__objects = {}
-        for k, v in js_objs.items():
-            cls = clss[v['__class__']]
-            self.__objects[k] = cls(**v)
-
-FileStorage.reload = reload
