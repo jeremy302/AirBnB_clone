@@ -2,7 +2,6 @@
 ''' module for FileStorage class '''
 import json
 from os.path import isfile
-import models
 
 
 class FileStorage:
@@ -25,6 +24,4 @@ class FileStorage:
 
     def reload(self):
         ''' load objects from a file '''
-        clss = models.models
-        if isfile(self.__file_path):
-            pass
+        pass
