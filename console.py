@@ -7,7 +7,7 @@ import sys
 import shlex
 import re
 import ast
-from models.__init__ import storage
+from models import storage
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -120,11 +120,11 @@ class HBNBCommand(cmd.Cmd):
         # update User id {"first_name":"elmahdi", "email":"test@alx.com"}
         return new_line
 
-    # def postcmd(self, stop, line):
-    #     """Prints the prompt when isatty is false"""
-    #     if not sys.__stdin__.isatty():
-    #         print('(hbnb) ', end='')
-    #     return stop
+    def postcmd(self, stop, line):
+        """Prints the prompt when isatty is false"""
+        if not sys.__stdin__.isatty():
+            print('(hbnb) ', end='')
+        return stop
 
     def emptyline(self):
         ''' overrides the bhavior of an empty line'''
