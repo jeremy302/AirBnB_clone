@@ -35,6 +35,11 @@ class HBNBCommand(cmd.Cmd):
              'latitude': float, 'longitude': float
             }
 
+    def preloop(self):
+        """Prints the prompt when isatty is false"""
+        if not sys.stdin.isatty():
+            print('(hbnb)')
+
     def precmd(self, line):
         """This function gets the line before it gets processed
         and here we can reformat command line for the dot.command syntax.
