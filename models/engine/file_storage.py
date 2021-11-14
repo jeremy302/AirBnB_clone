@@ -23,8 +23,7 @@ class FileStorage:
         ''' saves all objects to a file '''
         with open(self.__file_path, 'w') as file:
             r_objs = self.__objects
-            objs = {k: r_objs[k] if type(r_objs[k]) is dict
-                    else r_objs[k].to_dict() for k in r_objs}
+            objs = {k: r_objs[k].to_dict() for k in r_objs}
             json.dump(objs, file)
 
     def reload(self):
