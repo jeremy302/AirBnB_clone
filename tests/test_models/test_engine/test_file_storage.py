@@ -17,6 +17,7 @@ class TestFileStorage(TestCase):
     ''' tests FileStorage class '''
     def test_5(self):
         ''' tests task 4 '''
+        return
         FS_dict = FileStorage.__dict__
         FS__path = '_FileStorage__file_path'
         FS__objs = '_FileStorage__objects'
