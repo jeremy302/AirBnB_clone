@@ -31,8 +31,9 @@ class BaseModel:
         ''' returns a dictionary representation of the model '''
         dct = self.__dict__.copy()
         dct['__class__'] = self.__class__.__name__
-        dct['created_at'] = self.created_at.isoformat()
-        dct['updated_at'] = self.updated_at.isoformat()
+        for k in dct:
+            if type(dct[k]) is datetime:
+                dct[k] = dct[k].isoformat()
         return dct
 
     def __str__(self):
