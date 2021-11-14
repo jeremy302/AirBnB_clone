@@ -17,14 +17,14 @@ class BaseModel:
                     setattr(self, k, kwargs[k])
         else:
             self.id = str(uuid4())
-            self.created_at = datetime.utcnow()
-            self.updated_at = datetime.utcnow()
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
             storage.new(self)
 
     def save(self):
         ''' saves a model '''
         from . import storage
-        self.updated_at = datetime.utcnow()
+        self.updated_at = datetime.now()
         storage.save()
 
     def to_dict(self):
