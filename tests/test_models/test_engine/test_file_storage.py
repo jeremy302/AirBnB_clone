@@ -31,7 +31,8 @@ class TestFileStorage(TestCase):
         self.assertTrue(getattr(storage, FS__path))
         self.assertTrue(getattr(storage, FS__objs) is storage.all())
 
-        FS_objs.clear()
+        #FS_objs.clear()
+        storage.all().clear()
 
         # object registration and persistent __objects dict
         oobjs = storage.all()
