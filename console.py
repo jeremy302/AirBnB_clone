@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 '''this module for the console app'''
 
-
 import cmd
 import sys
 import shlex
