@@ -24,7 +24,7 @@ class FileStorage:
         with open(self.__file_path, 'w') as file:
             r_objs = self.__objects
             objs = {k: r_objs[k].to_dict() for k in r_objs}
-            json.dumps(objs, file)
+            json.dump(objs, file)
 
     def reload(self):
         ''' load objects from a file '''
