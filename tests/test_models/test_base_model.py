@@ -7,6 +7,7 @@ from uuid import UUID, uuid4
 from datetime import datetime
 from time import sleep
 from models.base_model import BaseModel
+from models import storage
 
 
 class TestBaseModel(TestCase):
@@ -94,11 +95,20 @@ class TestBaseModel(TestCase):
         sleep(0.01)
         obj.save()
         self.assertEqual(old_ctm, obj.created_at)
-        self.assertNotEqual(old_utm, obj.updated_at)
+        self.assertLess(old_utm, obj.updated_at)
 
         old_ctm = obj.created_at
         old_utm = obj.updated_at
-        sleep(0.01)
+        key = 'BaseModel.{}'.format(obj.id)
         obj.save()
+        storage.all().clear()
+        storage.reload()
+        sleep(0.01)
+        # obj.save()
+        nobj = storage.all()[key]
+
         self.assertEqual(old_ctm, obj.created_at)
         self.assertNotEqual(old_utm, obj.updated_at)
+        self.assertEqual(nobj.updated_at, obj.updated_at)
+        obj.updated_at = nobj.updated_at
+        self.assertEqual(obj.to_dict(), nobj.to_dict())
