@@ -22,8 +22,8 @@ class BaseModel:
             storage.new(self)
 
     def save(self):
-        ''' saves a model '''
-        from . import storage
+        '''saves the changes made to this model's instance'''
+        from models import storage
         self.updated_at = datetime.now()
         storage.save()
 

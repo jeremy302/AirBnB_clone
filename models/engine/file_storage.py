@@ -8,7 +8,7 @@ import models
 class FileStorage:
     ''' class for persistent storage '''
     __file_path = 'file.json'
-    __objects = {}
+    __objects = dict()
 
     def all(self):
         ''' gets all objects '''
@@ -22,8 +22,9 @@ class FileStorage:
     def save(self):
         ''' saves all objects to a file '''
         with open(self.__file_path, 'w') as file:
-            r_objs = self.__objects
-            objs = {k: r_objs[k].to_dict() for k in r_objs}
+            objs = dict()
+            for k, v in self.__objects.items():
+                objs[k] = v.to_dict()
             json.dump(objs, file)
 
     def reload(self):
