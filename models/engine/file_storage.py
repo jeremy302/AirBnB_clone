@@ -3,7 +3,6 @@
 import json
 from os.path import isfile
 import models
-from json import JSONEncoder
 
 
 class FileStorage:
@@ -22,11 +21,10 @@ class FileStorage:
 
     def save(self):
         ''' saves all objects to a file '''
-        with open(self.__file_path, mode='w') as file:
-            json_objs = {}
-            for key, value in self.__objects.items():
-                json_objs[key] = value.to_dict()
-            file.write(JSONEncoder().encode(json_objs))
+        with open(self.__file_path, 'w') as file:
+            r_objs = self.__objects
+            objs = {k: r_objs[k].to_dict() for k in r_objs}
+            json.dump(objs, file)
 
     def reload(self):
         ''' load objects from a file '''
