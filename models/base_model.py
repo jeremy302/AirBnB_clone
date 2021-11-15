@@ -23,7 +23,7 @@ class BaseModel:
 
     def save(self):
         ''' saves a model '''
-        from . import storage
+        from models import storage
         self.updated_at = datetime.now()
         storage.save()
 
