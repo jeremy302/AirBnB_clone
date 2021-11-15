@@ -31,30 +31,6 @@ def clio(sio):
 
 class TestHBNBCommand(TestCase):
     ''' tests HBNBCommand class '''
-    def test_6(self):
-        ''' task 6 test '''
-        FS_dict = FileStorage.__dict__
-        FS__path = '_FileStorage__file_path'
-        FS__objs = '_FileStorage__objects'
-        FS_path = FS_dict[FS__path]
-        FS_objs = FS_dict[FS__objs]
-
-        sio = StringIO()
-        with patch('sys.stdout', new=sio) as f:
-            app = HBNBCommand()
-
-            # TODO: help, quit and EOF validation
-            # help not empty
-            app.onecmd("help")
-            self.assertTrue(sio.getvalue())
-
-    def test_7(self):
-        ''' task 7 test '''
-        FS_dict = FileStorage.__dict__
-        FS__path = '_FileStorage__file_path'
-        FS__objs = '_FileStorage__objects'
-        FS_path = FS_dict[FS__path]
-        FS_objs = FS_dict[FS__objs]
 
     def test_8(self):
         '''tests for task 8 in console app and User class'''
