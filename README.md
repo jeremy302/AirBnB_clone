@@ -19,14 +19,14 @@ Now u can Use our built in commands
 |     command      |       Description       |        Usage       |
 |:-----------------|:-----------------------:|:-------------------:|
 | EOF  |  the EOF exits the program   |    EOF     |
-| all  |  Prints all string representation of all instances based or not on the class name| all <className>  |
-| count|  counts how many instances of class created and saved| count <class_name> |
-| create| creates a new instance of the class passed as argument| create <className> |
-| destroy| Deletes an instance based on the class name and id| destroy <className> <objectId>|
-| help | List available commands with "help" or detailed help with "help cmd"| help <cmd>|
+| all  |  Prints all string representation of all instances based or not on the class name| all *className*  |
+| count|  counts how many instances of class created and saved| count *className* |
+| create| creates a new instance of the class passed as argument| create *className* |
+| destroy| Deletes an instance based on the class name and id| destroy *className* *objectId*|
+| help | List available commands with "help" or detailed help with "help cmd"| help *cmd*|
 | quit | The quit command exits the program | quit |
-| show | prints the string representation of an instance | show <className> <objectId> |
-| update| Updates an object's attributes | update <className> <id> <attName> <attVal>|
+| show | prints the string representation of an instance | show *className* *objectId* |
+| update| Updates an object's attributes | update *className* *id* *attName* *attVal*|
 
 ### Alternative Syntax
 Also you can run the commands [count, show, destroy, update, all] in this format too: 
