@@ -138,12 +138,12 @@ class HBNBCommand(cmd.Cmd):
         '''exits the shell.
         an exit status of 0 is returned.
         files aren't saved on exit'''
-        exit()
+        exit(0)
 
     def do_EOF(self, arg):
         '''method that handles the EOF and exit the program'''
         # print()
-        exit()
+        exit(0)
 
     def do_create(self, arg):
         ''' creates a new instance of the class passed as argument

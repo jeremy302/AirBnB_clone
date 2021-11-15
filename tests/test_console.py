@@ -1,281 +1,555 @@
 #!/usr/bin/python3
-"""A unit test module for the console (command interpreter).
-"""
-import json
-import os
-import unittest
-from io import StringIO
+''' module for file_storage tests '''
+from unittest import TestCase
 from unittest.mock import patch
+import json
+import re
+import sys
+from uuid import UUID, uuid4
+from datetime import datetime
+from time import sleep
+import os
+from io import StringIO
 
-from console import HBNBCommand
 from models import storage
+from models.amenity import Amenity
 from models.base_model import BaseModel
-from tests import clear_stream
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models.user import User
+from models.engine.file_storage import FileStorage
+from console import HBNBCommand
 
 
-class TestHBNBCommand(unittest.TestCase):
-    """Represents the test class for the HBNBCommand class.
-    """
+def clio(sio):
+    ''' clears a string i/o buffer '''
+    sio.seek(0)
+    sio.truncate(0)
 
-    def test_console_v_0_0_1(self):
-        """Tests the features of version 0.0.1 of the console.
-        """
-        with patch('sys.stdout', new=StringIO()) as cout:
-            cons = HBNBCommand()
-            # normal empty line
-            cons.onecmd('')
-            cons.onecmd('    ')
-            self.assertEqual(cout.getvalue(), '')
-            # empty line after a wrong command
-            clear_stream(cout)
-            cons.onecmd('ls')
-            cons.onecmd('')
-            cons.onecmd('  ')
-            self.assertEqual(cout.getvalue(), '*** Unknown syntax: ls\n')
-            # the help command
-            clear_stream(cout)
-            cons.onecmd('help')
-            self.assertNotEqual(cout.getvalue().strip(), '')
-            clear_stream(cout)
-            cons.onecmd('help quit')
-            self.assertNotEqual(cout.getvalue().strip(), '')
-            clear_stream(cout)
+
+class TestHBNBCommand(TestCase):
+    ''' tests HBNBCommand class '''
+    def test_6(self):
+        ''' task 6 test '''
+        FS_dict = FileStorage.__dict__
+        FS__path = '_FileStorage__file_path'
+        FS__objs = '_FileStorage__objects'
+        FS_path = FS_dict[FS__path]
+        FS_objs = FS_dict[FS__objs]
+
+        sio = StringIO()
+        with patch('sys.stdout', new=sio) as f:
+            app = HBNBCommand()
+
+            # TODO: help, quit and EOF validation
+            # help not empty
+            app.onecmd("help")
+            self.assertTrue(sio.getvalue())
+
+            clio(sio)
             with self.assertRaises(SystemExit) as ex:
-                cons.onecmd('EOF')
+                app.onecmd('EOF')
             self.assertEqual(ex.exception.code, 0)
             with self.assertRaises(SystemExit) as ex:
-                cons.onecmd('quit')
+                app.onecmd('quit')
             self.assertEqual(ex.exception.code, 0)
 
-    def test_console_v_0_1(self):
-        """Tests the features of version 0.1 of the console.
-        """
-        with patch('sys.stdout', new=StringIO()) as cout:
-            cons = HBNBCommand()
-            if os.path.isfile('file.json'):
-                os.unlink('file.json')
-        # region The create command
-            # missing class name
-            clear_stream(cout)
-            cons.onecmd('create')
-            self.assertEqual(cout.getvalue(), "** class name missing **\n")
-            # invalid class name
-            clear_stream(cout)
-            cons.onecmd('create Base')
-            self.assertEqual(cout.getvalue(), "** class doesn't exist **\n")
-            clear_stream(cout)
-            cons.onecmd('create base')
-            self.assertEqual(cout.getvalue(), "** class doesn't exist **\n")
-            # valid class name
-            clear_stream(cout)
-            cons.onecmd('create BaseModel')
-            mdl_sid = 'BaseModel.{}'.format(cout.getvalue().strip())
-            self.assertTrue(mdl_sid in storage.all().keys())
-            self.assertTrue(type(storage.all()[mdl_sid]) is BaseModel)
-            with open('file.json', mode='r') as file:
-                json_obj = json.load(file)
-                self.assertTrue(type(json_obj) is dict)
-                self.assertTrue(mdl_sid in json_obj)
-        # endregion
-        # region The show command
-        # endregion
-        # region The destroy command
-        # endregion
-        # region The all command
-            # invalid class name
-            clear_stream(cout)
-            cons.onecmd('all Base')
-            self.assertEqual(cout.getvalue(), "** class doesn't exist **\n")
-            clear_stream(cout)
-            cons.onecmd('all base')
-            self.assertEqual(cout.getvalue(), "** class doesn't exist **\n")
-            # valid class name
-            clear_stream(cout)
-            cons.onecmd('create BaseModel')
-            mdl_id = cout.getvalue().strip()
-            mdl_sid = 'BaseModel.{}'.format(mdl_id)
-            clear_stream(cout)
-            cons.onecmd('create Amenity')
-            mdl_id1 = cout.getvalue().strip()
-            mdl_sid1 = 'Amenity.{}'.format(mdl_id1)
-            self.assertTrue(mdl_sid in storage.all().keys())
-            self.assertTrue(mdl_sid1 in storage.all().keys())
-            clear_stream(cout)
-            cons.onecmd('all BaseModel')
-            self.assertIn('[BaseModel] ({})'.format(mdl_id), cout.getvalue())
-            self.assertNotIn('[Amenity] ({})'.format(mdl_id1), cout.getvalue())
-            clear_stream(cout)
-            cons.onecmd('all')
-            self.assertIn('[BaseModel] ({})'.format(mdl_id), cout.getvalue())
-            self.assertIn('[Amenity] ({})'.format(mdl_id1), cout.getvalue())
-        # endregion
-        # region The update command
-            # missing instance id
-            clear_stream(cout)
-            cons.onecmd('update BaseModel')
-            self.assertEqual(cout.getvalue(), "** instance id missing **\n")
-            # invalid instance id
-            clear_stream(cout)
-            cons.onecmd('update BaseModel 49faff9a-451f-87b6-910505c55907')
-            self.assertEqual(cout.getvalue(), "** no instance found **\n")
-            # missing attribute name
-            clear_stream(cout)
-            cons.onecmd('create BaseModel')
-            mdl_id = cout.getvalue().strip()
-            clear_stream(cout)
-            cons.onecmd('update BaseModel {}'.format(mdl_id))
-            self.assertEqual(cout.getvalue(), "** attribute name missing **\n")
-            # missing attribute value
-            clear_stream(cout)
-            cons.onecmd('update BaseModel {} first_name'.format(mdl_id))
-            self.assertEqual(cout.getvalue(), "** value missing **\n")
-            # missing attribute value
-            clear_stream(cout)
-            if os.path.isfile('file.json'):
-                os.unlink('file.json')
-            self.assertFalse(os.path.isfile('file.json'))
-            cons.onecmd('update BaseModel {} first_name Chris'.format(mdl_id))
-            self.assertEqual(cout.getvalue(), "")
-            mdl_sid = 'BaseModel.{}'.format(mdl_id)
-            self.assertTrue(mdl_sid in storage.all().keys())
-            self.assertTrue(os.path.isfile('file.json'))
-            self.assertTrue(hasattr(storage.all()[mdl_sid], 'first_name'))
-            self.assertEqual(
-                getattr(storage.all()[mdl_sid], 'first_name', ''),
-                'Chris'
-            )
-        # endregion
+    def test_7(self):
+        ''' task 7 test '''
+        FS_dict = FileStorage.__dict__
+        FS__path = '_FileStorage__file_path'
+        FS__objs = '_FileStorage__objects'
+        FS_path = FS_dict[FS__path]
+        FS_objs = FS_dict[FS__objs]
 
-    def test_user(self):
-        """Tests the show, create, destroy, update, and all
-        commands with a User model.
-        """
-        with patch('sys.stdout', new=StringIO()) as cout:
-            cons = HBNBCommand()
-            # creating a User instance
-            cons.onecmd('create User')
-            mdl_id = cout.getvalue().strip()
-            # showing a User instance
-            clear_stream(cout)
-            cons.onecmd('show User {}'.format(mdl_id))
-            self.assertIn(mdl_id, cout.getvalue())
-            self.assertIn('[User] ({})'.format(mdl_id), cout.getvalue())
-            # showing all User instances
-            clear_stream(cout)
-            cons.onecmd('all User')
-            self.assertIn(mdl_id, cout.getvalue())
-            self.assertIn('[User] ({})'.format(mdl_id), cout.getvalue())
-            # updating a User instance
-            clear_stream(cout)
-            cons.onecmd('update User {} first_name Akpanoko'.format(mdl_id))
-            cons.onecmd('show User {}'.format(mdl_id))
-            self.assertIn(mdl_id, cout.getvalue())
-            self.assertIn(
-                "'first_name': 'Akpanoko'".format(mdl_id),
-                cout.getvalue()
-            )
-            # destroying a User instance
-            clear_stream(cout)
-            cons.onecmd('destroy User {}'.format(mdl_id))
-            self.assertEqual(cout.getvalue(), '')
-            cons.onecmd('show User {}'.format(mdl_id))
-            self.assertEqual(cout.getvalue(), '** no instance found **\n')
+        sio = StringIO()
+        with patch('sys.stdout', new=sio) as f:
+            app = HBNBCommand()
 
-    def test_class_all(self):
-        """Tests the ClassName.all() feature.
-        """
-        with patch('sys.stdout', new=StringIO()) as cout:
-            cons = HBNBCommand()
-            # create a sample object and show it
-            cons.onecmd('create City')
-            mdl_id = cout.getvalue().strip()
-            clear_stream(cout)
-            cmd_line = cons.precmd('City.all({})'.format(mdl_id))
-            cons.onecmd(cmd_line)
-            self.assertIn(mdl_id, cout.getvalue())
+            # create
+            # no arg
+            clio(sio)
+            app.onecmd("create")
+            self.assertEqual(sio.getvalue(), "** class name missing **\n")
 
-    def test_class_count(self):
-        """Tests the ClassName.count() feature.
-        """
-        with patch('sys.stdout', new=StringIO()) as cout:
-            cons = HBNBCommand()
-            # no objects
-            cmd_line = cons.precmd('User.count()')
-            cons.onecmd(cmd_line)
-            self.assertEqual(cout.getvalue(), "0\n")
-            # creating objects and counting them
-            cons.onecmd('create User')
-            cons.onecmd('create User')
-            clear_stream(cout)
-            cmd_line = cons.precmd('User.count()')
-            cons.onecmd(cmd_line)
-            self.assertEqual(cout.getvalue(), "2\n")
-            self.assertTrue(int(cout.getvalue()) >= 0)
+            # invalid arg
+            clio(sio)
+            app.onecmd("create ABC")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            # case-sensitivity
+            app.onecmd("create basemodel")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("create Basemodel")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("create Base")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("create baseModel")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
-    def test_class_show(self):
-        """Tests the ClassName.show(id) feature.
-        """
-        with patch('sys.stdout', new=StringIO()) as cout:
-            cons = HBNBCommand()
-            # create a sample object and show it
-            cons.onecmd('create City')
-            mdl_id = cout.getvalue().strip()
-            clear_stream(cout)
-            cmd_line = cons.precmd('City.show({})'.format(mdl_id))
-            cons.onecmd(cmd_line)
-            self.assertIn(mdl_id, cout.getvalue())
+            # valid arg
+            clio(sio)
+            objs_k = storage.all().copy()
+            app.onecmd("create BaseModel")
+            # model creation
+            kid = 'BaseModel.{}'.format(sio.getvalue()[:-1])
+            self.assertTrue(kid not in objs_k and kid in storage.all() and
+                            type(storage.all()[kid]) == BaseModel)
+            # saved to file
+            with open(FS_path, 'r') as file:
+                tmp = json.load(file)
+                self.assertTrue(type(tmp) is dict and kid in tmp)
+            obj = storage.all()[kid]
+            storage.all().clear()
+            storage.reload()
+            self.assertTrue(kid in storage.all())
+            self.assertEqual(obj.to_dict(), storage.all()[kid].to_dict())
 
-    def test_class_destroy(self):
-        """Tests the ClassName.destroy(id) feature.
-        """
-        with patch('sys.stdout', new=StringIO()) as cout:
-            cons = HBNBCommand()
-            # create a sample object and destroy it
-            cons.onecmd('create City')
-            mdl_id = cout.getvalue().strip()
-            clear_stream(cout)
-            cmd_line = cons.precmd('City.destroy({})'.format(mdl_id))
-            cons.onecmd(cmd_line)
-            clear_stream(cout)
-            cons.onecmd('show City {}'.format(mdl_id))
-            self.assertEqual(cout.getvalue(), "** no instance found **\n")
+            ##
+            ##
+            ##
+            ##
+            # show
+            # missing model
+            clio(sio)
+            app.onecmd("show")
+            self.assertEqual(sio.getvalue(), "** class name missing **\n")
 
-    def test_class_update_0(self):
-        """Tests the ClassName.update(id, attr_name, attr_value) feature.
-        """
-        with patch('sys.stdout', new=StringIO()) as cout:
-            cons = HBNBCommand()
-            # create a sample object and update it
-            cons.onecmd('create Place')
-            mdl_id = cout.getvalue().strip()
-            clear_stream(cout)
-            cmd_line = cons.precmd(
-                'Place.update({}, '.format(mdl_id) +
-                'name, "Rio de Janeiro")'
-            )
-            cons.onecmd(cmd_line)
-            cons.onecmd('show Place {}'.format(mdl_id))
-            self.assertIn(
-                "'name': 'Rio de Janeiro'",
-                cout.getvalue()
-            )
+            # invalid model
+            clio(sio)
+            app.onecmd("show ABC")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            # case-sensitivity
+            app.onecmd("show basemodel ")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("show Basemodel")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("show Base")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("create baseModel")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
 
-    def test_class_update_1(self):
-        """Tests the ClassName.update(id, dict_repr) feature.
-        """
-        with patch('sys.stdout', new=StringIO()) as cout:
-            cons = HBNBCommand()
-            # create a sample object and update it
-            cons.onecmd('create Amenity')
-            mdl_id = cout.getvalue().strip()
-            clear_stream(cout)
-            cmd_line = cons.precmd(
-                'Amenity.update({}, '.format(mdl_id) +
-                "{'name': 'Basketball court'})"
-            )
-            cons.onecmd(cmd_line)
-            cons.onecmd('show Amenity {}'.format(mdl_id))
-            self.assertIn(
-                "'name': 'Basketball court'",
-                cout.getvalue()
-            )
+            # missing id
+            clio(sio)
+            app.onecmd("show BaseModel")
+            self.assertEqual(sio.getvalue(), "** instance id missing **\n")
+            clio(sio)
+            app.onecmd("show BaseModel ")
+            self.assertEqual(sio.getvalue(), "** instance id missing **\n")
+
+            # invalid id
+            clio(sio)
+            app.onecmd("show BaseModel dkkd")
+            self.assertEqual(sio.getvalue(), "** no instance found **\n")
+            clio(sio)
+            app.onecmd("show BaseModel {}".format(str(uuid4())))
+            self.assertEqual(sio.getvalue(), "** no instance found **\n")
+
+            # valid args
+            clio(sio)
+            obj = BaseModel()
+            # correct string representation
+            self.assertEqual(str(obj), '[{}] ({}) {}'.format(
+                'BaseModel', obj.id, obj.__dict__))
+
+            key = 'BaseModel.{}'.format(obj.id)
+            app.onecmd("show BaseModel {}".format(obj.id))
+            self.assertEqual(sio.getvalue(), str(obj)+'\n')
+            clio(sio)
+            obj = BaseModel()
+            key = 'BaseModel.{}'.format(obj.id)
+            app.onecmd("show BaseModel {}".format(obj.id))
+            self.assertEqual(sio.getvalue(), str(obj)+'\n')
+
+            # ## ???
+            # clio(sio)
+            # obj.id=str(uuid4())
+            # key = 'BaseModel.{}'.format(obj.id)
+            # app.onecmd("show BaseModel {}".format(obj.id))
+            # self.assertEqual(sio.getvalue(), str(obj)+'\n')
+
+            del storage.all()[key]
+            clio(sio)
+            app.onecmd("show BaseModel {}".format(obj.id))
+            self.assertEqual(sio.getvalue(), "** no instance found **\n")
+
+            # precedence
+            clio(sio)
+            obj = BaseModel()
+            app.onecmd("show ABC {}".format(obj.id))  # valid id
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("show ABC {}".format(str(uuid4())))  # invalid id
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+
+            ##
+            ##
+            ##
+            ##
+            # destroy
+            # missing model
+            clio(sio)
+            app.onecmd("destroy")
+            self.assertEqual(sio.getvalue(), "** class name missing **\n")
+
+            # invalid model
+            clio(sio)
+            app.onecmd("destroy ABC")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            # case-sensitivity
+            app.onecmd("destroy basemodel ")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("destroy Basemodel")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("destroy Base")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("destroy baseModel")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+
+            # missing id
+            clio(sio)
+            app.onecmd("destroy BaseModel")
+            self.assertEqual(sio.getvalue(), "** instance id missing **\n")
+            clio(sio)
+            app.onecmd("destroy BaseModel ")
+            self.assertEqual(sio.getvalue(), "** instance id missing **\n")
+
+            # invalid id
+            clio(sio)
+            app.onecmd("destroy BaseModel dkkd")
+            self.assertEqual(sio.getvalue(), "** no instance found **\n")
+            clio(sio)
+            app.onecmd("destroy BaseModel {}".format(str(uuid4())))
+            self.assertEqual(sio.getvalue(), "** no instance found **\n")
+
+            # valid args
+            clio(sio)
+            obj = BaseModel()
+            storage.save()
+            # correct string representation
+            self.assertEqual(str(obj), '[{}] ({}) {}'.format(
+                'BaseModel', obj.id, obj.__dict__))
+
+            key = 'BaseModel.{}'.format(obj.id)
+            storage.all().clear()
+            storage.reload()
+            self.assertTrue(key in storage.all())
+            objs = storage.all()
+            objs_cp = objs.copy()
+            app.onecmd("destroy BaseModel {}".format(obj.id))
+            self.assertTrue(key not in storage.all())
+            objs.clear()
+            storage.reload()
+            self.assertTrue(key not in storage.all())
+            self.assertEqual(sio.getvalue(), '')
+
+            # precedence
+            clio(sio)
+            obj = BaseModel()
+            app.onecmd("destroy ABC {}".format(obj.id))  # valid id
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("destroy ABC {}".format(str(uuid4())))  # invalid id
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+
+            # all
+            # invalid model
+            clio(sio)
+            app.onecmd("all ABC")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            # case-sensitivity
+            app.onecmd("all basemodel ")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("all Basemodel")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("all Base")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("all baseModel")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+
+            # valid args
+            clio(sio)
+            obj = BaseModel()
+            # correct string representation
+            self.assertEqual(str(obj), '[{}] ({}) {}'.format(
+                'BaseModel', obj.id, obj.__dict__))
+            key = 'BaseModel.{}'.format(obj.id)
+            app.onecmd("all")
+            siov = sio.getvalue()
+            self.assertTrue(siov.endswith('\n'))
+            self.assertEqual(sorted(json.loads(siov)),
+                             sorted([str(v) for v in storage.all().values()]))
+
+            clio(sio)
+            obj = BaseModel()
+            # correct string representation
+            self.assertEqual(str(obj), '[{}] ({}) {}'.format(
+                'BaseModel', obj.id, obj.__dict__))
+            key = 'BaseModel.{}'.format(obj.id)
+            app.onecmd("all BaseModel")
+            siov = sio.getvalue()
+            self.assertTrue(siov.endswith('\n'))
+            try:
+                self.assertEqual(sorted(json.loads(siov)),
+                                 sorted([str(v) for v in storage.all().values()
+                                         if type(v) is BaseModel]))
+            except Exception as err:
+                self.assertTrue(False)
+
+            # update
+            # missing model
+            clio(sio)
+            app.onecmd("update")
+            self.assertEqual(sio.getvalue(), "** class name missing **\n")
+
+            # invalid model
+            clio(sio)
+            app.onecmd("update ABC")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            # case-sensitivity
+            app.onecmd("update basemodel ")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("update Basemodel")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("update Base")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("update baseModel")
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+
+            # missing id
+            clio(sio)
+            app.onecmd("update BaseModel")
+            self.assertEqual(sio.getvalue(), "** instance id missing **\n")
+            clio(sio)
+            app.onecmd("update BaseModel   ")
+            self.assertEqual(sio.getvalue(), "** instance id missing **\n")
+
+            # invalid id
+            clio(sio)
+            app.onecmd("update BaseModel abc")
+            self.assertEqual(sio.getvalue(), "** no instance found **\n")
+            clio(sio)
+            app.onecmd("update BaseModel {}".format(str(uuid4())))
+            self.assertEqual(sio.getvalue(), "** no instance found **\n")
+
+            # missing attribute
+            clio(sio)
+            obj = BaseModel()
+            app.onecmd("update BaseModel {}".format(obj.id))
+            self.assertEqual(sio.getvalue(), "** attribute name missing **\n")
+
+            # missing value
+            clio(sio)
+            obj = BaseModel()
+            app.onecmd("update BaseModel {} updated_at".format(obj.id))
+            self.assertEqual(sio.getvalue(), "** value missing **\n")
+            clio(sio)
+            obj = BaseModel()
+            app.onecmd("update BaseModel {} updated_at    ".format(obj.id))
+            self.assertEqual(sio.getvalue(), "** value missing **\n")
+
+            # valid args
+            clio(sio)
+            obj = BaseModel()
+            key = 'BaseModel.{}'.format(obj.id)
+            # correct string representation
+            self.assertEqual(str(obj), '[{}] ({}) {}'.format(
+                'BaseModel', obj.id, obj.__dict__))
+
+            app.onecmd('update BaseModel {} email "abc@def.com"'.format(
+                obj.id))
+            self.assertEqual(sio.getvalue(), '')
+            self.assertEqual(getattr(obj, 'email', ''), 'abc@def.com')
+            # persistence
+            storage.all().clear()
+            storage.reload()
+            self.assertEqual(getattr(storage.all()[key], 'email', ''),
+                             'abc@def.com')
+
+            # extra args ignored
+            clio(sio)
+            obj = storage.all()[key]
+            app.onecmd('update BaseModel {} email "abcd@def.com" name ghk'
+                       .format(obj.id))
+            self.assertEqual(sio.getvalue(), '')
+            self.assertEqual(getattr(obj, 'email', ''), 'abcd@def.com')
+            self.assertFalse(hasattr(obj, 'name'))
+
+            # precedence
+            clio(sio)
+            obj = BaseModel()
+            app.onecmd("update ABC {}".format(obj.id))  # valid id
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+
+            clio(sio)
+            app.onecmd("update ABC {}".format(str(uuid4())))  # invalid id
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd("update ABC {} email".format(
+                obj.id))  # valid id and attribute
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+            clio(sio)
+            app.onecmd('update ABC {} email "abc@123.com"'.format(
+                obj.id))  # valid id, attribute and value
+            self.assertEqual(sio.getvalue(), "** class doesn't exist **\n")
+
+    def test_8(self):
+        '''tests for task 8 in console app and User class'''
+        console = HBNBCommand()
+        buf = StringIO()
+
+        with patch('sys.stdout', new=buf) as f:
+            # test [ create ] command with User class
+            console.onecmd('create User')
+            user_id = buf.getvalue().strip()
+            self.assertTrue(user_id)
+            clio(buf)
+
+            # test [ show ] command with the last User created
+            console.onecmd('show User ' + user_id)
+            self.assertTrue(('[User] (' + user_id + ')') in buf.getvalue())
+            clio(buf)
+
+            # test [ all ] command with User class
+            console.onecmd('all User')
+            self.assertTrue(('[User] (' + user_id + ')') in buf.getvalue())
+            clio(buf)
+
+            # test [ update ] command in the last user created with
+            # comma seperated args
+            console.onecmd(
+                'update User ' + user_id +
+                ' first_name updatedName'
+                )
+            console.onecmd('show User ' + user_id)
+            self.assertTrue("'first_name': 'updatedName'" in buf.getvalue())
+            clio(buf)
+
+            # test [ destroy ] command to destroy last created User
+            console.onecmd('destroy User ' + user_id)
+            self.assertEqual(buf.getvalue(), "")
+            console.onecmd('show User ' + user_id)
+            self.assertEqual(buf.getvalue(), "** no instance found **\n")
+            clio(buf)
+
+    def test_11(self):
+        '''tests for task 11 about dot commands syntax for the all command'''
+        console = HBNBCommand()
+        buf = StringIO()
+
+        with patch('sys.stdout', new=buf) as f:
+            console.onecmd('create State')
+            state_id = buf.getvalue().strip()
+            clio(buf)
+            line = console.precmd('State.all()')
+            console.onecmd(line)
+            self.assertTrue(state_id in buf.getvalue())
+            clio(buf)
+
+    def test_12(self):
+        '''tests for task 12 about dot commands syntax for the count command'''
+        console = HBNBCommand()
+        buf = StringIO()
+
+        with patch('sys.stdout', new=buf) as f:
+            console.onecmd('create State')
+            clio(buf)
+            line = console.precmd('State.count()')
+            console.onecmd(line)
+            self.assertTrue(0 <= int(buf.getvalue()))
+            clio(buf)
+
+    def test_13(self):
+        '''tests for task 13 about dot commands syntax for the show command'''
+        console = HBNBCommand()
+        buf = StringIO()
+
+        with patch('sys.stdout', new=buf) as f:
+            console.onecmd('create State')
+            state_id = buf.getvalue().strip()
+            clio(buf)
+            line = console.precmd('State.show(' + state_id + ')')
+            console.onecmd(line)
+            self.assertTrue(state_id in buf.getvalue())
+            clio(buf)
+
+    def test_14(self):
+        ''' tests for task 14 about dot commands syntax for
+            the destroy command
+        '''
+        console = HBNBCommand()
+        buf = StringIO()
+
+        with patch('sys.stdout', new=buf) as f:
+            console.onecmd('create Review')
+            review_id = buf.getvalue().strip()
+            clio(buf)
+            line = console.precmd('Review.destroy(' + review_id + ')')
+            console.onecmd(line)
+            clio(buf)
+            console.onecmd('show Review ' + review_id)
+            self.assertEqual(buf.getvalue(), "** no instance found **\n")
+            clio(buf)
+
+    def test_15(self):
+        '''tests for task 15 about dot commands syntax for the update command
+            with quoted strings
+        '''
+        console = HBNBCommand()
+        buf = StringIO()
+
+        with patch('sys.stdout', new=buf) as f:
+            console.onecmd('create Review')
+            review_id = buf.getvalue().strip()
+            clio(buf)
+            line = console.precmd(
+                'Review.update(' + review_id +
+                ', text, "this room is good")'
+                )
+            console.onecmd(line)
+            console.onecmd('show Review ' + review_id)
+            self.assertTrue("'text': 'this room is good'" in buf.getvalue())
+            clio(buf)
+
+    def test_16(self):
+        '''tests for task 16 about dot commands syntax for the update command
+            but using dictionarry arguments and quoted strings
+        '''
+        console = HBNBCommand()
+        buf = StringIO()
+
+        with patch('sys.stdout', new=buf) as f:
+            console.onecmd('create Review')
+            review_id = buf.getvalue().strip()
+            clio(buf)
+            line = console.precmd(
+                'Review.update(' + review_id +
+                ", {'text': 'worth it', 'user name': 'not me'})"
+                )
+            console.onecmd(line)
+            console.onecmd('show Review ' + review_id)
+            self.assertTrue(
+                "'text': 'worth it', 'user name': 'not me'" in buf.getvalue()
+                )
+            clio(buf)
