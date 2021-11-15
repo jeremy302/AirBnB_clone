@@ -96,7 +96,7 @@ class TestFileStorage(TestCase):
 
         # same deserialization
         self.assertEqual(obj.to_dict(), storage.all()[kid].to_dict())
-        self.assertFalse(obj is storage.all()[kid].to_dict())
+        self.assertFalse(obj is storage.all()[kid])
 
         # args should not be counted towards manual instantiation
         obj = BaseModel(1, 2, 3)
