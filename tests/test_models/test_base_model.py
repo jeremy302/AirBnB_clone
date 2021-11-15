@@ -7,7 +7,11 @@ from uuid import UUID, uuid4
 from datetime import datetime
 from time import sleep
 from models.base_model import BaseModel
-
+from unittest.mock import patch
+from io import StringIO
+from tests import clear_stream
+from console import HBNBCommand
+import sys
 
 class TestBaseModel(TestCase):
     ''' tests BaseModel class '''
@@ -49,6 +53,16 @@ class TestBaseModel(TestCase):
                          {'__class__': 'BaseModel', 'id': obj.id,
                           'created_at': obj.created_at.isoformat(),
                           'updated_at': obj.updated_at.isoformat()})
+        with patch('sys.stdout', new=StringIO()) as cout:
+            cons = HBNBCommand()
+            clear_stream(cout)
+            cons.onecmd('create BaseModel')
+            id = cout.getvalue().strip()
+            clear_stream(cout)
+            cons.onecmd('show BaseModel ' + id)
+            log = cout.getvalue()
+            self.assertTrue(log.find(id) != -1)
+            clear_stream(cout)
 
     def test_4(self):
         ''' task 4 tests '''
