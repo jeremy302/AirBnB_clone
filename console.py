@@ -49,7 +49,8 @@ class HBNBCommand(cmd.Cmd):
 
         # check if the line has normal commands and
         # dosen't need reformatting
-        if not ('.' in line and '(' in line and ')' in line):
+        test_line = shlex.split(line)
+        if not ('.' in test_line[0] and '(' in test_line[0] and ')' in line):
             splt_line = shlex.split(line)
             if len(splt_line) > 3:
                 final_line = '{} {} {} {}'.format(splt_line[0],
@@ -60,6 +61,7 @@ class HBNBCommand(cmd.Cmd):
                                                            for r in
                                                            splt_line[3:]
                                                            ))
+                return final_line
             else:
                 return line
         # use this string as a refernece to the regex
