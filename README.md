@@ -4,7 +4,7 @@ This project is the first stage on  building a clone of the AirBnB website. This
 
 ## How to Use
 
-1. After cloning the repository locate the "console.py" file and run it 
+1. After cloning the repository locate the "console.py" file (at the root of the repo) and run it 
 ```
 AirBnB_clone$ ./console.py 
 ```
