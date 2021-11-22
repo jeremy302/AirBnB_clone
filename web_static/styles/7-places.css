@@ -1,0 +1,36 @@
+
+.places-header{
+	font-size: 30px;
+	margin-top: 2em;
+	margin-bottom: 0em;
+}
+.places-header+div{
+	margin-top: .8em;
+}
+
+.places-listing{
+	width: 390px;
+	margin: 20px;
+	padding: 20px;
+	border: 1px #FF5A5F solid;
+	border-radius: 4px;
+}
+
+.places-listing h2{
+	font-size: 30px;
+	text-align: center;
+}
+
+
+.grid{
+	display: flex;
+	flex: 0 1 0;
+	flex-flow: row wrap;
+}
+.just-center{justify-content: center;}
+.just-evenly{justify-content: space-evenly;}
+.just-around{justify-content: space-around;}
+.just-between{justify-content: space-between;}
+.align-center{
+	align-items: center;
+}
