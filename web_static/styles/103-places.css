@@ -173,12 +173,12 @@ div.reviews{
   list-style: none;
 }
 .reviews ul h3{
-  font-size: 14px;
+  font-size: 16px;
   text-align: start;
   margin-bottom: .2em;
 }
 .reviews ul p{
-  font-size: 12px;
+  font-size: 16px;
   text-align: start;
   margin-top: 0em;
 }
